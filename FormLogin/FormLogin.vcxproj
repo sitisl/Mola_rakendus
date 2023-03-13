@@ -58,6 +58,11 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
   </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
     <ClCompile>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
@@ -87,7 +92,12 @@
     <QtUic Include="FormLogin.ui" />
     <QtMoc Include="FormLogin.h" />
     <ClCompile Include="FormLogin.cpp" />
+    <ClCompile Include="FormMessenger.cpp" />
     <ClCompile Include="main.cpp" />
+    <QtUic Include="FormMessenger.ui" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="FormMessenger.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

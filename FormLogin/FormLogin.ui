@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>FormLoginClass</class>
- <widget class="QMainWindow" name="FormLoginClass">
+ <class>CFormLogin</class>
+ <widget class="QMainWindow" name="CFormLogin">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>FormLogin</string>
+   <string>MÖLA - Sisselogimine</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QGroupBox" name="gBoxLogin">
@@ -42,7 +42,7 @@
        <item row="1" column="0">
         <widget class="QLabel" name="lblPassword">
          <property name="text">
-          <string>Parool: </string>
+          <string>          Parool: </string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -67,24 +67,6 @@
      </item>
     </layout>
    </widget>
-  </widget>
-  <widget class="QMenuBar" name="menuBar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>600</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QToolBar" name="mainToolBar">
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
