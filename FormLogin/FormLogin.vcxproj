@@ -84,15 +84,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <QtRcc Include="FormLogin.qrc" />
-    <QtUic Include="formchatbox.ui" />
     <QtUic Include="FormLogin.ui" />
     <QtMoc Include="FormLogin.h" />
-    <ClCompile Include="formchatbox.cpp" />
     <ClCompile Include="FormLogin.cpp" />
     <ClCompile Include="main.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <QtMoc Include="formchatbox.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
