@@ -21,6 +21,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -55,9 +56,19 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
   </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>C:\Users\rannr\source\repos\Mola\Qt-Frameless-Window-DarkStyle-master\Qt-Frameless-Window-DarkStyle-master\framelesswindow;C:\Users\rannr\source\repos\Mola\Qt-Frameless-Window-DarkStyle-master\Qt-Frameless-Window-DarkStyle-master;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
     <ClCompile>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
@@ -84,15 +95,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <QtRcc Include="FormLogin.qrc" />
-    <QtUic Include="formchatbox.ui" />
+    <QtRcc Include="resources.qrc" />
     <QtUic Include="FormLogin.ui" />
     <QtMoc Include="FormLogin.h" />
-    <ClCompile Include="formchatbox.cpp" />
     <ClCompile Include="FormLogin.cpp" />
+    <ClCompile Include="FormMessenger.cpp" />
     <ClCompile Include="main.cpp" />
+    <QtUic Include="FormMessenger.ui" />
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="formchatbox.h" />
+    <QtMoc Include="FormMessenger.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

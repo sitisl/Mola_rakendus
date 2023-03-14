@@ -2,6 +2,7 @@
 
 #include <QtWidgets/QMainWindow>
 #include "ui_FormLogin.h"
+#include "FormMessenger.h"
 
 class FormLogin : public QMainWindow
 {
@@ -11,6 +12,10 @@ public:
     FormLogin(QWidget *parent = nullptr);
     ~FormLogin();
 
+private slots:
+    void on_btnLogin_clicked();
+
 private:
-    Ui::FormLoginClass ui;
+    Ui::CFormLogin ui;
+    FormMessenger* formMessenger;
 };
