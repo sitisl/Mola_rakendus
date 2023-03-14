@@ -14,31 +14,61 @@
    <string>MÖLA</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QHBoxLayout" name="horizontalLayout_2">
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="2" column="0" rowspan="2">
+     <widget class="QListWidget" name="listWidget">
       <item>
-       <widget class="QPushButton" name="pushButton">
-        <property name="text">
-         <string>PushButton</string>
-        </property>
-       </widget>
+       <property name="text">
+        <string>Pets</string>
+       </property>
       </item>
       <item>
-       <widget class="QLineEdit" name="lineEditMessage">
-        <property name="placeholderText">
-         <string>Aa</string>
-        </property>
-       </widget>
+       <property name="text">
+        <string>Madis</string>
+       </property>
       </item>
       <item>
-       <widget class="QPushButton" name="btnSend">
-        <property name="text">
-         <string>Saada</string>
-        </property>
-       </widget>
+       <property name="text">
+        <string>Ülo</string>
+       </property>
       </item>
-     </layout>
+      <item>
+       <property name="text">
+        <string>jannu55</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item row="3" column="2">
+     <widget class="QPushButton" name="btnSend">
+      <property name="text">
+       <string>Saada</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1" colspan="2">
+     <widget class="QTextEdit" name="textEdit">
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+      <property name="placeholderText">
+       <string>Siia tulevad sõnumid koos saatja ja kellaajaga...</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="1">
+     <widget class="QLineEdit" name="lineEditMessage">
+      <property name="placeholderText">
+       <string>Aa</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>Kasutajad võrgus:</string>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -63,6 +93,8 @@
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
  <connections/>
 </ui>
