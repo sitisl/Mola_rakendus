@@ -34,9 +34,9 @@ int main(const int argc, const char* argv[]) {
 
 	if (bindSocket(server) != 1) return 0;
 
-	if (listenConnection(server.socket, MAX_CONNECTIONS) != 1) return 0;
+	if (listenConnection(server.socket, MAX_CONNECTIONS) != 1) return 0; // This is always listening
 
-	SOCKET accepted_sck = acceptConnection(server.socket);
+	SOCKET accepted_sck = acceptConnection(server.socket); // For incoming connections a new socket is created
 
 	int nRet;
 	char buf[1024];
@@ -45,6 +45,18 @@ int main(const int argc, const char* argv[]) {
 	getClientIP(clientIP, accepted_sck);
 	printf("Client IP address: %s\n", clientIP);
 
+
+	// TODO: create a multiple client handler
+	// There are 2 options to do this,
+	// 1) Is to use multithreading with <thread> header
+	// 2) RECOMMENDED, is to use fd_set data structure, and select() function
+	// 
+	// TODO: If multi client done, let each client choose their username
+	// The ip aadress is always the same for incoming clients, only the PORT is unique
+	// This means we can use assign each port a different name, somehow
+
+
+	//----------------Handles only one client--------------
 
 	while (1) {
 		memset(buf, 0, 1024);
@@ -62,12 +74,8 @@ int main(const int argc, const char* argv[]) {
 			WSACleanup();
 			return 1;
 		}
-
 	}
-
-	nRet = recv(accepted_sck, buf, sizeof(buf), 0);
-
-	printf("%s", buf);
+	//--------------------------------------------------------
 
 	return 1;
 }
