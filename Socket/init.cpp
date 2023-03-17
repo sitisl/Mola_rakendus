@@ -17,8 +17,8 @@
 
 #define LOOP_BACK_ADDRESS "127.0.0.1"
 
-
-int initSocketLib()
+// Inits lib
+int initSocketLib() 
 {
 #ifdef _WIN32
     WSADATA wsaData;
@@ -31,7 +31,8 @@ int initSocketLib()
     return 1;
 }
 
-SOCKET createSocket() {
+// Returns created socket
+SOCKET createSocket() { 
     SOCKET socket_return = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (socket_return == INVALID_SOCKET) {
         std::cerr << "Socket failed with error: " << WSAGetLastError() << '\n';
@@ -43,6 +44,7 @@ SOCKET createSocket() {
     
 }
 
+// Inits server socket with specific address and port
 sockaddr_in initServer(unsigned int port, const char* address){
     sockaddr_in addr_in;
 
@@ -56,6 +58,7 @@ sockaddr_in initServer(unsigned int port, const char* address){
     return addr_in;
 }
 
+// Bind the created socket with the server
 int bindSocket(socket_t server) {
 
     // Bind socket - this assosciates a local address with a socket
@@ -69,6 +72,7 @@ int bindSocket(socket_t server) {
     return 1;
 }
 
+// Listen for incoming connection, set max amount of connection
 int listenConnection(SOCKET sck, int maxNumOfConnections) {
     if (listen(sck, maxNumOfConnections) == SOCKET_ERROR) {
         printf("Listen() error %d", WSAGetLastError());
@@ -98,12 +102,13 @@ SOCKET acceptConnection(SOCKET sck){
     return accepted_sck;
 }
 
-char* getClientIP(char* buf, SOCKET accepted_sck) {
+void getClientIP(char* buf, SOCKET accepted_sck) {
     sockaddr_in clientAddr;
+    char stemp[INET_ADDRSTRLEN];
     int clientAddrLen = sizeof(clientAddr);
     getpeername(accepted_sck, (SOCKADDR*)&clientAddr, &clientAddrLen);
-    inet_ntop(AF_INET, &clientAddr.sin_addr, buf, INET_ADDRSTRLEN);
-
-    return (char *)buf;
+    inet_ntop(AF_INET, &clientAddr.sin_addr, stemp, INET_ADDRSTRLEN);
+    int client_port = ntohs(clientAddr.sin_port);
+    snprintf(buf, INET_ADDRSTRLEN, "%s:%d", stemp, client_port);
 }
 

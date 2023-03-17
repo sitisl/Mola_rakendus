@@ -45,12 +45,6 @@ int main(const int argc, const char* argv[]) {
 	getClientIP(clientIP, accepted_sck);
 	printf("Client IP address: %s\n", clientIP);
 
-	/*sockaddr_in clientaddr;
-	int clientaddrlen = sizeof(clientaddr);
-	getpeername(accepted_sck, (sockaddr*)&clientaddr, &clientaddrlen);
-
-	inet_ntop(af_inet, &clientaddr.sin_addr, clientip, inet_addrstrlen);*/
-
 
 	while (1) {
 		memset(buf, 0, 1024);

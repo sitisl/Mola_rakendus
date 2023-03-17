@@ -5,6 +5,7 @@
 #pragma comment(lib, "ws2_32.lib")
 
 #define MAX_CONNECTIONS 6
+#define	LOOPBACK_ADDRESS "127.0.0.1"
 
 typedef struct {
 	SOCKET socket;
@@ -19,4 +20,4 @@ sockaddr_in initServer(unsigned int port, const char* address);
 int bindSocket(socket_t server);
 int listenConnection(SOCKET sck, int maxNumOfConnections);
 SOCKET acceptConnection(SOCKET sck);
-char* getClientIP(char *buf, SOCKET accepted_sck);
+void getClientIP(char *buf, SOCKET accepted_sck);
