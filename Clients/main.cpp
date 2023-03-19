@@ -10,61 +10,55 @@
 #include <Windows.h>
 #include <iostream>
 #include <tchar.h>
-#include <process.h>
+
+#include "initClient.h"
 using namespace std;
-
-#define PORT		5555
-#define ADDRESS		"127.0.0.1"
-
-DWORD WINAPI sendThreadFunc(LPVOID lpParam);
 
 int main() {
 
-	SOCKET client_sock;
-	WSAData wsaData;
-	sockaddr_in clientService;
-
+	clientInfo_t client = { 0, };
+	
 	// Init lib =====================================
 
-	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
-		printf("Error intializing Winsock %d", WSAGetLastError());
-		return -1;
-	}
-	printf("Initialized\n");
+	initSocketLib();
 
-	// SETUP socket ================================
+	// SETUP socket =================================
 
-	client_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	client.clientSocket = createSocket();
 
-	if (client_sock == INVALID_SOCKET) {
-		printf("Could not create socket : %d\n", WSAGetLastError());
-		WSACleanup();
-		return -1;
-	}
-	printf("Socket created\n");
-	InetPton(AF_INET, _T("127.0.0.1"), &clientService.sin_addr.s_addr);
-	clientService.sin_family = AF_INET;
-	clientService.sin_port = htons(5555);
+	// Init client with port ========================
 
+	initClient(PORT, &client.addr); 
 
-
-	int res = connect(client_sock, (struct sockaddr*)&clientService, sizeof(clientService));
+	int res = connect(client.clientSocket, (struct sockaddr*)&client.addr, sizeof(client.addr));
 	if (res == SOCKET_ERROR) {
 		printf("Connect error %d\n", WSAGetLastError());
 		WSACleanup();
-		closesocket(client_sock);
+		closesocket(client.clientSocket);
 		return -1;
 	}
 	printf("Connected\n");
 	char buffer[1024] = { 0, };
-
+	int bytesReceived = recv(client.clientSocket, buffer, 1023, 0);
+	if (bytesReceived > 0) {
+		buffer[bytesReceived] = '\0';
+		printf("%s\n", buffer);
+	}
+	fgets(buffer, 1023, stdin);
+	size_t len = strlen(buffer);
+	if (len > 0 && buffer[len - 1] == '\n') {
+		buffer[len - 1] = '\0';
+	}
+	// Send chosen nickname to server
+	send(client.clientSocket, buffer, (int)strlen(buffer), 0);
 
 
 	while (1) {
+		
 		Sleep(10);
 		puts("Send: ");
 		fgets(buffer, 1023, stdin);
-		send(client_sock, buffer, strlen(buffer), 0);
+		send(client.clientSocket, buffer, (int)strlen(buffer), 0);
 	}
 	return 1;
 }
