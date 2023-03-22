@@ -1,4 +1,4 @@
-#include "FormLogin.h"
+#include "FormName.h"
 #include <QtWidgets/QApplication>
 
 
@@ -6,8 +6,7 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    FormLogin *formLogin = new FormLogin;
-
-    formLogin->show();
+    FormName *formName = new FormName;
+    formName->show();
     return a.exec();
 }

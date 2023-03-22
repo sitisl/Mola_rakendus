@@ -32,12 +32,12 @@
     <Import Project="$(QtMsBuild)\qt_defaults.props" />
   </ImportGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
-    <QtInstall>6.4.2_msvc2019_64</QtInstall>
+    <QtInstall>6.2.4_msvc2019_64</QtInstall>
     <QtModules>core;gui;widgets</QtModules>
     <QtBuildConfig>debug</QtBuildConfig>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
-    <QtInstall>6.4.2_msvc2019_64</QtInstall>
+    <QtInstall>6.2.4_msvc2019_64</QtInstall>
     <QtModules>core;gui;widgets</QtModules>
     <QtBuildConfig>release</QtBuildConfig>
   </PropertyGroup>
@@ -95,16 +95,20 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <QtRcc Include="FormLogin.qrc" />
-    <QtRcc Include="resources.qrc" />
     <QtUic Include="FormLogin.ui" />
     <QtMoc Include="FormLogin.h" />
     <ClCompile Include="FormLogin.cpp" />
     <ClCompile Include="FormMessenger.cpp" />
+    <ClCompile Include="FormName.cpp" />
     <ClCompile Include="main.cpp" />
     <QtUic Include="FormMessenger.ui" />
+    <QtUic Include="FormName.ui" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="FormMessenger.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="FormName.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

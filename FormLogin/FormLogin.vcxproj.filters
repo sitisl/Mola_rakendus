@@ -35,9 +35,6 @@
     <ClCompile Include="FormLogin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <QtRcc Include="resources.qrc">
-      <Filter>Resource Files</Filter>
-    </QtRcc>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -46,14 +43,23 @@
     <ClCompile Include="FormMessenger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FormName.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="FormMessenger.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="FormName.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="FormMessenger.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="FormName.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>
