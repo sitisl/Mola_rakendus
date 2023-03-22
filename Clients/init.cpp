@@ -2,8 +2,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #pragma comment(lib, "ws2_32.lib")
-#pragma once
-
 
 #include <Winsock2.h>
 #include <WS2tcpip.h>
@@ -15,22 +13,19 @@
 
 #include "init.h"
 
-#define LOOP_BACK_ADDRESS "127.0.0.1"
-
-
+// Inits lib
 int initSocketLib()
 {
-#ifdef _WIN32
     WSADATA wsaData;
     if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
         std::cerr << "WSAStartup failed with error: " << WSAGetLastError() << '\n';
         return 0;
     }
-#endif
     std::cout << "Init success\n";
     return 1;
 }
 
+// Returns created socket
 SOCKET createSocket() {
     SOCKET socket_return = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (socket_return == INVALID_SOCKET) {
@@ -40,28 +35,45 @@ SOCKET createSocket() {
     }
     std::cout << "Socket created\n";
     return socket_return;
-    
+
 }
 
-sockaddr_in initServer(unsigned int port, const char* address){
+// Inits server socket with specific address and port
+sockaddr_in initServer(unsigned int port, const char* address) {
     sockaddr_in addr_in;
 
     //InetPton(AF_INET, _T("127.0.0.1"), &server.sin_addr.s_addr);
 
     addr_in.sin_family = AF_INET;
     addr_in.sin_port = htons(port);
-    addr_in.sin_addr.s_addr = inet_addr(address);
+    //addr_in.sin_addr.s_addr = inet_addr(address); 
+    addr_in.sin_addr.s_addr = INADDR_ANY; //Only for server
+    //addr_in.sin_addr.s_addr = inet_addr("192.168.0.24");
     memset(&addr_in.sin_zero, 0, 8);
 
     return addr_in;
 }
 
-int bindSocket(socket_t server) {
+static void getServerIP(serverInfo_t server) {
+    int addrLen = sizeof(server.addr);
+    if (getsockname(server.listener_socket, (sockaddr*)&server.addr, &addrLen) == SOCKET_ERROR) {
+        printf("Couldnt get server name\n");
+        return;
+    }
 
-    // Bind socket - this assosciates a local address with a socket
-    if (bind(server.socket, (SOCKADDR*)&server.addr, sizeof(server.addr)) == SOCKET_ERROR) {
+    inet_ntop(AF_INET, &(server.addr.sin_addr), server.IP, INET_ADDRSTRLEN);
+
+    // Print the server IP address
+    printf("Server IP: %s\n", server.IP);
+}
+
+// Bind the created socket with the server
+int bindSocket(serverInfo_t server) {
+
+    // Bind socket - this assosciates a local IP address with the socket
+    if (bind(server.listener_socket, (SOCKADDR*)&server.addr, sizeof(server.addr)) == SOCKET_ERROR) {
         printf("Could not bind socket %d", WSAGetLastError());
-        closesocket(server.socket);
+        closesocket(server.listener_socket);
         WSACleanup();
         return 0;
     }
@@ -69,6 +81,7 @@ int bindSocket(socket_t server) {
     return 1;
 }
 
+// Listen for incoming connection, set max amount of connection
 int listenConnection(SOCKET sck, int maxNumOfConnections) {
     if (listen(sck, maxNumOfConnections) == SOCKET_ERROR) {
         printf("Listen() error %d", WSAGetLastError());
@@ -86,7 +99,7 @@ int listenConnection(SOCKET sck, int maxNumOfConnections) {
 // accepted_sock will handle the communication with client and server, while
 // sock will keep on listening and accepting new clients
 
-SOCKET acceptConnection(SOCKET sck){
+SOCKET acceptConnection(SOCKET sck) {
 
     SOCKET accepted_sck;
     accepted_sck = accept(sck, NULL, NULL);
@@ -98,12 +111,5 @@ SOCKET acceptConnection(SOCKET sck){
     return accepted_sck;
 }
 
-char* getClientIP(char* buf, SOCKET accepted_sck) {
-    sockaddr_in clientAddr;
-    int clientAddrLen = sizeof(clientAddr);
-    getpeername(accepted_sck, (SOCKADDR*)&clientAddr, &clientAddrLen);
-    inet_ntop(AF_INET, &clientAddr.sin_addr, buf, INET_ADDRSTRLEN);
 
-    return (char *)buf;
-}
 
