@@ -26,15 +26,6 @@
     <QtRcc Include="FormLogin.qrc">
       <Filter>Resource Files</Filter>
     </QtRcc>
-    <QtUic Include="FormLogin.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
-    <QtMoc Include="FormLogin.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <ClCompile Include="FormLogin.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <QtRcc Include="resources.qrc">
       <Filter>Resource Files</Filter>
     </QtRcc>
@@ -46,14 +37,23 @@
     <ClCompile Include="FormMessenger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FormLoginDiag.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="FormMessenger.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="FormLoginDiag.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="FormMessenger.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="FormLoginDiag.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

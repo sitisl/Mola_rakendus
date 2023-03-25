@@ -96,15 +96,17 @@
   <ItemGroup>
     <QtRcc Include="FormLogin.qrc" />
     <QtRcc Include="resources.qrc" />
-    <QtUic Include="FormLogin.ui" />
-    <QtMoc Include="FormLogin.h" />
-    <ClCompile Include="FormLogin.cpp" />
+    <ClCompile Include="FormLoginDiag.cpp" />
     <ClCompile Include="FormMessenger.cpp" />
     <ClCompile Include="main.cpp" />
+    <QtUic Include="FormLoginDiag.ui" />
     <QtUic Include="FormMessenger.ui" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="FormMessenger.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="FormLoginDiag.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
