@@ -7,8 +7,6 @@ FormMessenger::FormMessenger(QString userName, QWidget *parent)
 	ui.setupUi(this);
 	ui.textEdit->setReadOnly(TRUE);
 
-
-
 	// Init lib =====================================
 
 	initSocketLib();
