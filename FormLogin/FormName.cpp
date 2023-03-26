@@ -16,7 +16,8 @@ void FormName::on_btnJatka_clicked()
     if (strUserName != "")
     {
         hide();
-        formMessenger = new FormMessenger(this);
+        formMessenger = new FormMessenger(strUserName, this);
+
         formMessenger->show();
     }
     else
@@ -25,3 +26,4 @@ void FormName::on_btnJatka_clicked()
     }
 
 }
+

@@ -11,56 +11,65 @@
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>600</width>
+    <height>400</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>600</width>
+    <height>400</height>
+   </size>
+  </property>
   <property name="windowTitle">
    <string>MÖLA</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>icons/Mola.png</normaloff>icons/Mola.png</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QGroupBox" name="groupBox">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>190</x>
-      <y>120</y>
-      <width>241</width>
-      <height>101</height>
+      <x>200</x>
+      <y>150</y>
+      <width>206</width>
+      <height>54</height>
      </rect>
     </property>
-    <property name="title">
-     <string>Nimi</string>
-    </property>
-    <widget class="QWidget" name="">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>30</y>
-       <width>206</width>
-       <height>54</height>
-      </rect>
-     </property>
-     <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Sisesta nimi:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QLineEdit" name="lineNimi"/>
-      </item>
-      <item row="1" column="0" colspan="2">
-       <widget class="QPushButton" name="btnJatka">
-        <property name="text">
-         <string>Jätka</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
+    <layout class="QGridLayout" name="layoutKasutajaNimi">
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="lineNimi"/>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="lblNimi">
+       <property name="text">
+        <string>Sisesta nimi:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0" colspan="2">
+      <widget class="QPushButton" name="btnJatka">
+       <property name="text">
+        <string>Jätka</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>

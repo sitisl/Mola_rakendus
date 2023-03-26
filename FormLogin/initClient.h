@@ -1,7 +1,12 @@
 #pragma once
 
-#include <stdlib.h>
 #include <Winsock2.h>
+#include <WS2tcpip.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <Windows.h>
+#include <iostream>
+#include <tchar.h>
 
 #pragma comment(lib, "ws2_32.lib")
 

@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/myresources">
+        <file>icons/Image.png</file>
+        <file>icons/Smile.png</file>
+        <file>icons/Mola.png</file>
+    </qresource>
+</RCC>

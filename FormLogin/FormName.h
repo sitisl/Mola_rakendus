@@ -18,4 +18,5 @@ private slots:
 private:
     Ui::QMainWindow ui;
     FormMessenger* formMessenger;
+
 };
