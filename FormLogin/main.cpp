@@ -7,7 +7,7 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    QFile f(":/qdarkstyle/theme/darkstyle.qss");
+    QFile f(":/qdarkstyle/qdarkstyle/theme/darkstyle.qss");
     if (!f.exists())
     {
         printf("Unable to set stylesheet. File not found!\n");
