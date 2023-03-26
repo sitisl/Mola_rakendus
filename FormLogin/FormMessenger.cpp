@@ -1,6 +1,6 @@
 #include "FormMessenger.h"
 
-FormMessenger::FormMessenger(QString userName, QWidget *parent)
+FormMessenger::FormMessenger(QString userName, QWidget* parent)
 	: QMainWindow(parent),
 	m_userName(userName)
 {
@@ -27,7 +27,7 @@ FormMessenger::FormMessenger(QString userName, QWidget *parent)
 		ui.textEdit->append(connectMsg);
 		WSACleanup();
 		closesocket(client.clientSocket);
-		
+
 	}
 	else {
 		connectMsg = QString("Connected");
@@ -39,18 +39,23 @@ FormMessenger::FormMessenger(QString userName, QWidget *parent)
 		buffer[bytesReceived] = '\0';
 		ui.textEdit->append(QString(buffer));
 		ui.textEdit->append(m_userName);
-		
+
 	}
 	send(client.clientSocket, m_userName.toUtf8().constData(), m_userName.size(), 0);
+
+	std::thread receiveThread(&FormMessenger::receiveMessages, this);
+	receiveThread.detach();
 }
 
 FormMessenger::~FormMessenger()
-{}
+{
+	
+}
 
 
 void FormMessenger::on_btnPicture_clicked()
 {
- 
+
 }
 
 void FormMessenger::on_btnSend_clicked()
@@ -58,9 +63,33 @@ void FormMessenger::on_btnSend_clicked()
 	QString message = ui.lineEditMessage->text();
 	send(client.clientSocket, message.toUtf8().constData(), message.size(), 0);
 	ui.lineEditMessage->clear();
+	ui.textEdit->append(m_userName + ": " + message);
 }
 
 void FormMessenger::on_btnEmoji_clicked()
 {
 
 }
+
+void FormMessenger::receiveMessages()
+{
+    while (true) {
+        char buffer[1024] = { 0 };
+        int bytesReceived = recv(client.clientSocket, buffer, 1023, 0);
+        if (bytesReceived == SOCKET_ERROR) {
+            int errorCode = WSAGetLastError();
+            qDebug() << "Socket error: " << errorCode;
+            break;
+        }
+        if (bytesReceived > 0) {
+            buffer[bytesReceived] = '\0';
+            ui.textEdit->append(QString(buffer));
+        }
+    }
+}
+
+
+
+
+
+

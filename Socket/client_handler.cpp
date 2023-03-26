@@ -11,6 +11,7 @@
 #include <iostream>
 #include "Client_handler.h"
 
+
 void HandleNewConnection(serverInfo_t* serv, clientInfo_t* client)
 {	
 	
@@ -50,42 +51,53 @@ void HandleNewConnection(serverInfo_t* serv, clientInfo_t* client)
 
 void HandleClientData(serverInfo_t* serv, clientInfo_t* client)
 {
-	fd_set read_fds = serv->fr;
-	int nRet = select(serv->maxFd, &read_fds, NULL, NULL, NULL);
-	if (nRet == SOCKET_ERROR)
-	{
-		printf("Select API call failed in func %d\n", WSAGetLastError());
-		return;
-	}
-	for (int i = 0; i < MAX_CONNECTIONS; i++)
-	{
-		if (client->clientSocket[i] > 0) // True only if socket is assigned 
-		{
-			if (FD_ISSET(client->clientSocket[i], &serv->fr))
-			{
-				// Read client data
-				char receive_buf[1024] = { 0, };
-				int nRet = recv(client->clientSocket[i], receive_buf, sizeof(receive_buf), 0);
-				if (nRet  == SOCKET_ERROR)
-				{
-					printf("%s Disconnected or error, closing socket\n", client->clientName[i]);
-					FD_CLR(client->clientSocket[i], &serv->fr); // Remove socket from fd_set
-					closesocket(client->clientSocket[i]);
-					client->clientSocket[i] = 0; // Set the socket to 0 so it can be reused later
-				}
-				else if (nRet == 0) {
-					printf("%s Disconnected closing socket\n", client->clientName[i]);
-					FD_CLR(client->clientSocket[i], &serv->fr); // Remove socket from fd_set
-					closesocket(client->clientSocket[i]);
-					client->clientSocket[i] = 0; // Set the socket to 0 so it can be reused later
-				}
-				else
-				{
-					printf("%s: %s\n",client->clientName[i], receive_buf);
-				}
-			}
-		}
-	}
+    fd_set read_fds = serv->fr;
+    int nRet = select(serv->maxFd, &read_fds, NULL, NULL, NULL);
+    if (nRet == SOCKET_ERROR)
+    {
+        printf("Select API call failed in func %d\n", WSAGetLastError());
+        return;
+    }
+    for (int i = 0; i < MAX_CONNECTIONS; i++)
+    {
+        if (client->clientSocket[i] > 0) // True only if socket is assigned 
+        {
+            if (FD_ISSET(client->clientSocket[i], &serv->fr))
+            {
+                // Read client data
+                char receive_buf[1024] = { 0, };
+                int nRet = recv(client->clientSocket[i], receive_buf, sizeof(receive_buf), 0);
+                if (nRet  == SOCKET_ERROR)
+                {
+                    printf("%s Disconnected or error, closing socket\n", client->clientName[i]);
+                    FD_CLR(client->clientSocket[i], &serv->fr); // Remove socket from fd_set
+                    closesocket(client->clientSocket[i]);
+                    client->clientSocket[i] = 0; // Set the socket to 0 so it can be reused later
+                }
+                else if (nRet == 0) {
+                    printf("%s Disconnected closing socket\n", client->clientName[i]);
+                    FD_CLR(client->clientSocket[i], &serv->fr); // Remove socket from fd_set
+                    closesocket(client->clientSocket[i]);
+                    client->clientSocket[i] = 0; // Set the socket to 0 so it can be reused later
+                }
+                else
+                {
+                    printf("%s: %s\n",client->clientName[i], receive_buf);
+
+                    // Send the received message to all connected clients except the client that sent the message
+                    for (int j = 0; j < MAX_CONNECTIONS; j++)
+                    {
+                        if (client->clientSocket[j] > 0 && client->clientSocket[j] != client->clientSocket[i])
+                        {
+							char msg_buf[1024] = { 0 };
+							sprintf(msg_buf, "%s: %s", client->clientName[i], receive_buf);
+							send(client->clientSocket[j], msg_buf, strlen(msg_buf), 0);
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 void getClientIP(char* buf, SOCKET accepted_sck) {

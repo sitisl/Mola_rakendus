@@ -8,6 +8,8 @@
 #include <QFile>
 #include <QFileDialog>
 #include <QPixMap>
+#include <QThread>
+
 using namespace std;
 
 class FormMessenger : public QMainWindow
@@ -29,5 +31,7 @@ private slots:
 	void on_btnPicture_clicked();
 	void on_btnSend_clicked();
 	void on_btnEmoji_clicked();
+	void receiveMessages();
+
 };
 
