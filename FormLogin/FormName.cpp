@@ -10,6 +10,7 @@ FormName::FormName(QWidget *parent)
     //Create shortcut for return key, to login when pressing enter.
     QShortcut *shortcut = new QShortcut(QKeySequence(Qt::Key_Return), this);
     QObject::connect(shortcut, SIGNAL(activated()), ui.btnJatka, SLOT(click()));
+    
 }
 
 FormName::~FormName()

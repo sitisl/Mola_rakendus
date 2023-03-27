@@ -7,7 +7,6 @@ FormMessenger::FormMessenger(QString userName, QWidget* parent)
 {
 	ui.setupUi(this);
 	setWindowIcon(QIcon(":/myresources/icons/Mola.png"));
-
 	ui.textEdit->setReadOnly(TRUE);
 
 	// Init lib =====================================
@@ -50,6 +49,7 @@ FormMessenger::FormMessenger(QString userName, QWidget* parent)
 	receiveThread.detach();
 	QShortcut *shortcut = new QShortcut(QKeySequence(Qt::Key_Return), this);
 	connect(shortcut, SIGNAL(activated()), this, SLOT(on_btnSend_clicked()));
+	
 }
 
 FormMessenger::~FormMessenger()

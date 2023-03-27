@@ -215,5 +215,8 @@
         <file>themes/rc/window_undock_pressed.png</file>
         <file>themes/rc/window_undock_pressed@2x.png</file>
         <file>icons/Image-Dark-default.png</file>
+        <file>icons/Image-Dark-foc.png</file>
+        <file>icons/Smile_dark_def.png</file>
+        <file>icons/Smile_dark_foc.png</file>
     </qresource>
 </RCC>
