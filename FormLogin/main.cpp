@@ -1,8 +1,6 @@
 #include "FormName.h"
 #include <QtWidgets/QApplication>
 
-
-
 int main(int argc, char *argv[])
 {
     Q_INIT_RESOURCE(resources);

@@ -164,6 +164,7 @@ void FormMessenger::receiveMessages()
                 ui.textEdit->append(buffer);
             }
         }
+		free(img_data);
     }
 }
 
