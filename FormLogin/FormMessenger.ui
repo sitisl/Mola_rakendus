@@ -28,12 +28,8 @@
   <property name="windowTitle">
    <string>MÖLA</string>
   </property>
-  <property name="windowIcon">
-   <iconset>
-    <normaloff>icons/Mola.png</normaloff>icons/Mola.png</iconset>
-  </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>15</x>

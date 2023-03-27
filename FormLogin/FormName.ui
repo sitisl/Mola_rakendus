@@ -31,10 +31,6 @@
   <property name="windowTitle">
    <string>MÖLA</string>
   </property>
-  <property name="windowIcon">
-   <iconset>
-    <normaloff>icons/Mola.png</normaloff>icons/Mola.png</iconset>
-  </property>
   <widget class="QWidget" name="centralwidget">
    <property name="sizePolicy">
     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">

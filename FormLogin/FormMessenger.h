@@ -7,8 +7,11 @@
 #include <QWidget>
 #include <QFile>
 #include <QFileDialog>
-#include <QPixMap>
+#include <QImage>
 #include <QThread>
+#include <QBuffer>
+#include <QPixmap>
+#include <QLabel>
 
 using namespace std;
 

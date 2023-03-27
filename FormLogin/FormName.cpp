@@ -5,6 +5,7 @@ FormName::FormName(QWidget *parent)
     : QMainWindow(parent)
 {
     ui.setupUi(this);
+    setWindowIcon(QIcon(":/myresources/icons/Mola.png"));
 }
 
 FormName::~FormName()
@@ -17,7 +18,6 @@ void FormName::on_btnJatka_clicked()
     {
         hide();
         formMessenger = new FormMessenger(strUserName, this);
-
         formMessenger->show();
     }
     else

@@ -66,8 +66,10 @@ void HandleClientData(serverInfo_t* serv, clientInfo_t* client)
             {
                 // Read client data
                 char receive_buf[1024] = { 0, };
+                int img_size = 0; // Track the size of the image data received so far
+                char* img_data = nullptr; // Allocate a buffer to hold the image data
                 int nRet = recv(client->clientSocket[i], receive_buf, sizeof(receive_buf), 0);
-                if (nRet  == SOCKET_ERROR)
+                if (nRet == SOCKET_ERROR)
                 {
                     printf("%s Disconnected or error, closing socket\n", client->clientName[i]);
                     FD_CLR(client->clientSocket[i], &serv->fr); // Remove socket from fd_set
@@ -82,19 +84,87 @@ void HandleClientData(serverInfo_t* serv, clientInfo_t* client)
                 }
                 else
                 {
-                    printf("%s: %s\n",client->clientName[i], receive_buf);
-
-                    // Send the received message to all connected clients except the client that sent the message
-                    for (int j = 0; j < MAX_CONNECTIONS; j++)
+                    // Check if the received data is an image
+                    if (strstr(receive_buf, "<img"))
                     {
-                        if (client->clientSocket[j] > 0 && client->clientSocket[j] != client->clientSocket[i])
+                        // Read the data from the socket until the end of the image tag is found
+                        while (!strstr(receive_buf, ">"))
                         {
-							char msg_buf[1024] = { 0 };
-							sprintf(msg_buf, "%s: %s", client->clientName[i], receive_buf);
-							send(client->clientSocket[j], msg_buf, strlen(msg_buf), 0);
+                           // Reallocate the buffer to hold the new data
+                            img_data = (char*) realloc(img_data, img_size + nRet + 1);
+                            if (img_data == nullptr)
+                            {
+                                printf("Error allocating memory for image data.\n");
+                                return;
+                            }
+                            
+                            // Append the newly received data to the img_data buffer
+                            memcpy(img_data + img_size, receive_buf, nRet);
+                            *(img_data + img_size + nRet) = '\0'; // add null character
+                            img_size += nRet;
+
+                            // Read more data from the socket
+                            nRet = recv(client->clientSocket[i], receive_buf, sizeof(receive_buf), 0);
+                            if (nRet == SOCKET_ERROR)
+                            {
+                                printf("%s Disconnected or error, closing socket\n", client->clientName[i]);
+                                FD_CLR(client->clientSocket[i], &serv->fr); // Remove socket from fd_set
+                                closesocket(client->clientSocket[i]);
+                                client->clientSocket[i] = 0; // Set the socket to 0 so it can be reused later
+                            }
+                            else if (nRet == 0) {
+                                printf("%s Disconnected closing socket\n", client->clientName[i]);
+                                FD_CLR(client->clientSocket[i], &serv->fr); // Remove socket from fd_set
+                                closesocket(client->clientSocket[i]);
+                                client->clientSocket[i] = 0; // Set the socket to 0 so it can be reused later
+                            }
+                        }
+
+                        // Append the final portion of the image data to the img_data buffer
+
+                        img_data = (char*)realloc(img_data, img_size + nRet + 1);
+                        if (img_data == nullptr)
+                        {
+                            printf("Error allocating memory for image data.\n");
+                            return;
+                        }
+
+                        memcpy(img_data + img_size, receive_buf, nRet);
+                        *(img_data + img_size + nRet) = '\0'; // add null character
+                        img_size += nRet;
+
+                        printf("%s: Image\n", client->clientName[i]);
+                        printf("%s: %s\n", client->clientName[i], img_data);
+
+                        // Send the image data to all connected clients except the client that sent the message
+                        for (int j = 0; j < MAX_CONNECTIONS; j++)
+                        {
+                            if (client->clientSocket[j] > 0 && client->clientSocket[j] != client->clientSocket[i])
+                            {
+                                char msg_buf[1024] = { 0 };
+                                sprintf(msg_buf, "%s:", client->clientName[i]);
+                                send(client->clientSocket[j], msg_buf, strlen(msg_buf), 0);
+                                send(client->clientSocket[j], img_data, img_size, 0);
+                            }
+                        }
+
+                    }
+                    else
+                    {
+                        printf("%s: %s\n", client->clientName[i], receive_buf);
+                        // Send the received message to all connected clients except the client that sent the message
+                        for (int j = 0; j < MAX_CONNECTIONS; j++)
+                        {
+                            if (client->clientSocket[j] > 0 && client->clientSocket[j] != client->clientSocket[i])
+                            {
+                                char msg_buf[1024] = { 0 };
+                                sprintf(msg_buf, "%s: %s", client->clientName[i], receive_buf);
+                                send(client->clientSocket[j], msg_buf, strlen(msg_buf), 0);
+                            }
                         }
                     }
                 }
+                free(img_data);
             }
         }
     }
