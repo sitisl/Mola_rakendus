@@ -115,18 +115,20 @@ void FormMessenger::receiveMessages()
             qDebug() << "Socket error: " << errorCode;
             break;
         }
-		int img_size = 0; // Track the size of the image data received so far
-		char* img_data = nullptr; // Allocate a buffer to hold the image data
 
         if (bytesReceived > 0) {
+			buffer[bytesReceived] = '\0';
 			if (strstr(buffer, "<img")) {
+				int img_size = 0; // Track the size of the image data received so far
+				char* img_data = nullptr; // Allocate a buffer to hold the image data
 				while (!strstr(buffer, ">"))
 				{
 					// Reallocate the buffer to hold the new data
 					img_data = (char*)realloc(img_data, img_size + bytesReceived + 1);
 					if (img_data == nullptr)
 					{
-						printf("Error allocating memory for image data.\n");
+						ui.textEdit->append("Error allocating memory for image data");
+						free(img_data);
 						return;
 					}
 
@@ -140,6 +142,7 @@ void FormMessenger::receiveMessages()
 					if (bytesReceived == SOCKET_ERROR) {
 						int errorCode = WSAGetLastError();
 						qDebug() << "Socket error: " << errorCode;
+						free(img_data);
 						break;
 					}
 				}
@@ -150,6 +153,7 @@ void FormMessenger::receiveMessages()
 				if (img_data == nullptr)
 				{
 					printf("Error allocating memory for image data.\n");
+					free(img_data);
 					return;
 				}
 
@@ -158,13 +162,13 @@ void FormMessenger::receiveMessages()
 				img_size += bytesReceived;
 			
 				ui.textEdit->append(img_data);
+				free(img_data);
             } 
 			else {
                 // Display the text message in the text edit
-                ui.textEdit->append(buffer);
+                ui.textEdit->append(QString(buffer));
             }
         }
-		free(img_data);
     }
 }
 
