@@ -1,4 +1,5 @@
 #include "FormMessenger.h"
+#include <QShortcut>
 
 FormMessenger::FormMessenger(QString userName, QWidget* parent)
 	: QMainWindow(parent),
@@ -6,7 +7,6 @@ FormMessenger::FormMessenger(QString userName, QWidget* parent)
 {
 	ui.setupUi(this);
 	setWindowIcon(QIcon(":/myresources/icons/Mola.png"));
-
 	ui.textEdit->setReadOnly(TRUE);
 
 	// Init lib =====================================
@@ -47,6 +47,9 @@ FormMessenger::FormMessenger(QString userName, QWidget* parent)
 
 	std::thread receiveThread(&FormMessenger::receiveMessages, this);
 	receiveThread.detach();
+	QShortcut *shortcut = new QShortcut(QKeySequence(Qt::Key_Return), this);
+	connect(shortcut, SIGNAL(activated()), this, SLOT(on_btnSend_clicked()));
+	
 }
 
 FormMessenger::~FormMessenger()
@@ -94,9 +97,12 @@ void FormMessenger::on_btnPicture_clicked()
 void FormMessenger::on_btnSend_clicked()
 {
 	QString message = ui.lineEditMessage->text();
-	send(client.clientSocket, message.toUtf8().constData(), message.size(), 0);
-	ui.lineEditMessage->clear();
-	ui.textEdit->append(m_userName + ": " + message);
+	if (message != "") {
+		send(client.clientSocket, message.toUtf8().constData(), message.size(), 0);
+		ui.lineEditMessage->clear();
+		ui.textEdit->append(m_userName + ": " + message);
+	}
+	
 
 }
 

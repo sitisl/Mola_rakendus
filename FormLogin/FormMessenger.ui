@@ -48,12 +48,20 @@
         </size>
        </property>
        <property name="styleSheet">
-        <string notr="true">background-color: transparent;
-border-image: url(:/myresources/icons/Smile.png);
+        <string notr="true">QPushButton#btnEmoji{
+background-color: transparent;
+border-image: url(:/myresources/icons/Smile_dark_def.png);
 background: none;
 border: none;
 background-repeat: none;
-</string>
+}
+QPushButton:hover#btnEmoji{
+background-color: transparent;
+border-image: url(:/myresources/icons/Smile_dark_foc.png);
+background: none;
+border: none;
+background-repeat: none;
+}</string>
        </property>
        <property name="text">
         <string/>
@@ -93,11 +101,20 @@ background-repeat: none;
         </size>
        </property>
        <property name="styleSheet">
-        <string notr="true">background-color: transparent;
-border-image: url(:/myresources/icons/Image.png);
+        <string notr="true">QPushButton#btnPicture{
+background-color: transparent;
+border-image: url(:/myresources/icons/Image-Dark-default.png);
 background: none;
 border: none;
 background-repeat: none;
+}
+QPushButton:hover#btnPicture{
+background-color: transparent;
+border-image: url(:/myresources/icons/Image-Dark-foc.png);
+background: none;
+border: none;
+background-repeat: none;
+}
 </string>
        </property>
        <property name="text">
