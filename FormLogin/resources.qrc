@@ -214,5 +214,6 @@
         <file>themes/rc/window_undock_focus@2x.png</file>
         <file>themes/rc/window_undock_pressed.png</file>
         <file>themes/rc/window_undock_pressed@2x.png</file>
+        <file>icons/Image-Dark-default.png</file>
     </qresource>
 </RCC>

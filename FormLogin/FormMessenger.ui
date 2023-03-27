@@ -94,7 +94,7 @@ background-repeat: none;
        </property>
        <property name="styleSheet">
         <string notr="true">background-color: transparent;
-border-image: url(:/myresources/icons/Image.png);
+border-image: url(:/myresources/icons/Image-Dark-default.png);
 background: none;
 border: none;
 background-repeat: none;
