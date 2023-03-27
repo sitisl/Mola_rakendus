@@ -119,6 +119,7 @@ void FormMessenger::receiveMessages()
 		char* img_data = nullptr; // Allocate a buffer to hold the image data
 
         if (bytesReceived > 0) {
+			buffer[bytesReceived] = '\0';
 			if (strstr(buffer, "<img")) {
 				while (!strstr(buffer, ">"))
 				{
@@ -161,7 +162,7 @@ void FormMessenger::receiveMessages()
             } 
 			else {
                 // Display the text message in the text edit
-                ui.textEdit->append(buffer);
+                ui.textEdit->append(QString(buffer));
             }
         }
 		free(img_data);
