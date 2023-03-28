@@ -93,6 +93,7 @@ void FormMessenger::on_btnPicture_clicked()
 	ui.textEdit->append(m_userName + ": ");
 	ui.textEdit->append(imageTag);
 	//ui.textEdit->insertPlainText(imageTag);
+
 }
 
 void FormMessenger::on_btnSend_clicked()
