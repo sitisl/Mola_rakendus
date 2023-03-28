@@ -12,6 +12,7 @@
 #include <QBuffer>
 #include <QPixmap>
 #include <QLabel>
+#include <QShortcut>
 
 using namespace std;
 

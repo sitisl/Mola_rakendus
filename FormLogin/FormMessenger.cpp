@@ -1,5 +1,4 @@
 #include "FormMessenger.h"
-#include <QShortcut>
 
 FormMessenger::FormMessenger(QString userName, QWidget* parent)
 	: QMainWindow(parent),
@@ -47,9 +46,11 @@ FormMessenger::FormMessenger(QString userName, QWidget* parent)
 
 	std::thread receiveThread(&FormMessenger::receiveMessages, this);
 	receiveThread.detach();
+
+	//Create shortcut for return key, to login when pressing enter
 	QShortcut *shortcut = new QShortcut(QKeySequence(Qt::Key_Return), this);
 	connect(shortcut, SIGNAL(activated()), this, SLOT(on_btnSend_clicked()));
-	
+
 }
 
 FormMessenger::~FormMessenger()
