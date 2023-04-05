@@ -22,12 +22,13 @@ class FormMessenger : public QMainWindow
 	Q_OBJECT
 
 public:
-	FormMessenger(QString userName, QWidget *parent = nullptr);
+	FormMessenger(QString userName, QString avatar, QWidget *parent = nullptr);
 	~FormMessenger();
 
 private:
 	Ui::FormMessengerClass ui;
 	QString m_userName;
+	QString m_avatarPath;
 	clientInfo_t client;
 
 public slots:
@@ -37,6 +38,7 @@ private slots:
 	void on_btnSend_clicked();
 	void on_btnEmoji_clicked();
 	void insertEmoji(const QString& emoji);
+	void on_lineEditMessage_textChanged();
 	void receiveMessages();
 
 };

@@ -7,6 +7,7 @@
 #define MAX_CONNECTIONS		6
 #define	LOOPBACK_ADDRESS	"127.0.0.1"
 #define MAX_NAMELEN			25
+#define MAX_ICON			50
 
 typedef struct serverInfo{
 	SOCKET listener_socket;
@@ -23,6 +24,7 @@ typedef struct clientInfo{
 	sockaddr_in addr;
 	char clientIP[MAX_CONNECTIONS][INET_ADDRSTRLEN];
 	char clientName[MAX_CONNECTIONS][MAX_NAMELEN];
+	char clientIcon[MAX_CONNECTIONS][MAX_ICON];
 }clientInfo_t;
 
 

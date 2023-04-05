@@ -219,4 +219,17 @@
         <file>icons/Smile_dark_def.png</file>
         <file>icons/Smile_dark_foc.png</file>
     </qresource>
+    <qresource prefix="/avatars">
+        <file>icons/Asset 1.png</file>
+        <file>icons/Asset 2.png</file>
+        <file>icons/Asset 3.png</file>
+        <file>icons/Asset 4.png</file>
+        <file>icons/Asset 5.png</file>
+        <file>icons/Asset 6.png</file>
+        <file>icons/Asset 7.png</file>
+        <file>icons/Asset 8.png</file>
+        <file>icons/Asset 9.png</file>
+        <file>icons/Asset 10.png</file>
+        <file>icons/Asset 11.png</file>
+    </qresource>
 </RCC>

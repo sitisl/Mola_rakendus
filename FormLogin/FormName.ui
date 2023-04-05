@@ -42,9 +42,9 @@
     <property name="geometry">
      <rect>
       <x>200</x>
-      <y>150</y>
+      <y>180</y>
       <width>206</width>
-      <height>54</height>
+      <height>71</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="layoutKasutajaNimi">
@@ -66,6 +66,19 @@
       </widget>
      </item>
     </layout>
+   </widget>
+   <widget class="QPushButton" name="btnAvatar">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>90</y>
+      <width>80</width>
+      <height>80</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>

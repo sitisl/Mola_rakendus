@@ -35,6 +35,7 @@ void HandleNewConnection(serverInfo_t* serv, clientInfo_t* client)
 				client->clientSocket[i] = nNewClient; // Assign new socket
 				getClientIP(client->clientIP[i], client->clientSocket[i]);
 				getClientName(client->clientName[i], client->clientSocket[i]);
+                getClientIcon(client->clientIcon[i], client->clientSocket[i]);
 				printf("%s connected IP: %s\n",client->clientName[i], client->clientIP[i]);
 				if (nNewClient > serv->maxFd) {
 					serv->maxFd = nNewClient + 1;
@@ -90,14 +91,15 @@ void HandleClientData(serverInfo_t* serv, clientInfo_t* client)
                         // Read the data from the socket until the end of the image tag is found
                         while (!strstr(receive_buf, ">"))
                         {
-                           // Reallocate the buffer to hold the new data
-                            img_data = (char*) realloc(img_data, img_size + nRet + 1);
-                            if (img_data == nullptr)
+                            // Reallocate the buffer to hold the new data
+                            char* new_img_data = (char*)realloc(img_data, img_size + nRet + 1);
+                            if (new_img_data == nullptr)
                             {
                                 printf("Error allocating memory for image data.\n");
                                 return;
                             }
-                            
+                            img_data = new_img_data;
+
                             // Append the newly received data to the img_data buffer
                             memcpy(img_data + img_size, receive_buf, nRet);
                             *(img_data + img_size + nRet) = '\0'; // add null character
@@ -122,19 +124,20 @@ void HandleClientData(serverInfo_t* serv, clientInfo_t* client)
 
                         // Append the final portion of the image data to the img_data buffer
 
-                        img_data = (char*)realloc(img_data, img_size + nRet + 1);
-                        if (img_data == nullptr)
+                        char* new_img_data = (char*)realloc(img_data, img_size + nRet + 1);
+                        if (new_img_data == nullptr)
                         {
                             printf("Error allocating memory for image data.\n");
                             return;
                         }
+                        img_data = new_img_data;
 
                         memcpy(img_data + img_size, receive_buf, nRet);
                         *(img_data + img_size + nRet) = '\0'; // add null character
                         img_size += nRet;
 
                         printf("%s: Image\n", client->clientName[i]);
-                        printf("%s: %s\n", client->clientName[i], img_data);
+                        //printf("%s: %s\n", client->clientName[i], img_data);
 
                         // Send the image data to all connected clients except the client that sent the message
                         for (int j = 0; j < MAX_CONNECTIONS; j++)
@@ -158,7 +161,7 @@ void HandleClientData(serverInfo_t* serv, clientInfo_t* client)
                             if (client->clientSocket[j] > 0 && client->clientSocket[j] != client->clientSocket[i])
                             {
                                 char msg_buf[1024] = { 0 };
-                                sprintf(msg_buf, "%s: %s", client->clientName[i], receive_buf);
+                                sprintf(msg_buf, "%s  %s: %s", client->clientIcon[i], client->clientName[i], receive_buf);
                                 send(client->clientSocket[j], msg_buf, strlen(msg_buf), 0);
                             }
                         }
@@ -191,5 +194,18 @@ void getClientName(char* name, SOCKET clientSocket)
 
 	// Add null terminator to the end of the received string
 	name[bytesReceived] = '\0';
+
+}
+
+void getClientIcon(char* icon, SOCKET clientSocket)
+{
+    // Send "Choose a nickname" message to the client
+    send(clientSocket, "Choose an icon:", strlen("Choose an icon:"), 0);
+
+    // Receive client's chosen nickname
+    int bytesReceived = recv(clientSocket, icon, MAX_ICON, 0);
+
+    // Add null terminator to the end of the received string
+    icon[bytesReceived] = '\0';
 
 }
