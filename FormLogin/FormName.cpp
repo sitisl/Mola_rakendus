@@ -1,6 +1,5 @@
 #include "FormName.h"
 #include "FormMessenger.h"
-#include <QShortcut>
 
 FormName::FormName(QWidget *parent)
     : QMainWindow(parent)

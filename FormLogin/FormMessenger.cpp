@@ -1,5 +1,4 @@
 #include "FormMessenger.h"
-#include <QShortcut>
 
 FormMessenger::FormMessenger(QString userName, QWidget* parent)
 	: QMainWindow(parent),
@@ -29,6 +28,7 @@ FormMessenger::FormMessenger(QString userName, QWidget* parent)
 		ui.textEdit->append(connectMsg);
 		WSACleanup();
 		closesocket(client.clientSocket);
+		//ui.centralWidget->setEnabled(false);
 	}
 	else {
 		connectMsg = QString("Connected");
@@ -47,14 +47,14 @@ FormMessenger::FormMessenger(QString userName, QWidget* parent)
 
 	std::thread receiveThread(&FormMessenger::receiveMessages, this);
 	receiveThread.detach();
-	QShortcut *shortcut = new QShortcut(QKeySequence(Qt::Key_Return), this);
+	QShortcut* shortcut = new QShortcut(QKeySequence(Qt::Key_Return), this);
 	connect(shortcut, SIGNAL(activated()), this, SLOT(on_btnSend_clicked()));
-	
+
 }
 
 FormMessenger::~FormMessenger()
 {
-	
+
 }
 
 
@@ -91,6 +91,7 @@ void FormMessenger::on_btnPicture_clicked()
 	// Append the image tag to the text edit
 	ui.textEdit->append(m_userName + ": ");
 	ui.textEdit->append(imageTag);
+	ui.textEdit->moveCursor(QTextCursor::End);
 	//ui.textEdit->insertPlainText(imageTag);
 }
 
@@ -99,47 +100,117 @@ void FormMessenger::on_btnSend_clicked()
 	QString message = ui.lineEditMessage->text();
 	if (message != "") {
 		send(client.clientSocket, message.toUtf8().constData(), message.size(), 0);
-		ui.lineEditMessage->clear();
+		if (message.contains(":)")) {
+			message.replace(":)", QString::fromUtf8("\U0001F642"));
+		}
+		if (message.contains(":(")) {
+			message.replace(":(", QString::fromUtf8("\U0001F641")); 
+		}
+		if (message.contains(":D")) {
+			message.replace(":D", QString::fromUtf8("\U0001F603"));
+		}
+		if (message.contains("XD")) {
+			message.replace("XD", QString::fromUtf8("\U0001F606"));
+		}
+		if (message.contains(":p")) {
+			message.replace(":p", QString::fromUtf8("\U0001F61B"));
+		}
+		if (message.contains(":o")) {
+			message.replace(":o", QString::fromUtf8("\U0001F62E"));
+		}
+		if (message.contains(";p")) {
+			message.replace(";p", QString::fromUtf8("\U0001F61C"));
+		}
+		if (message.contains(":|")) {
+			message.replace(":|", QString::fromUtf8("\U0001F610"));
+		}
+		if (message.contains(":O")) {
+			message.replace(":O", QString::fromUtf8("\U0001F62F"));
+		}
+		if (message.contains(":S")) {
+			message.replace(":S", QString::fromUtf8("\U0001F616"));
+		}
+		if (message.contains(":*")) {
+			message.replace(":*", QString::fromUtf8("\U0001F617"));
+		}
+		if (message.contains(":^)")) {
+			message.replace(":^)", QString::fromUtf8("\U0001F60F"));
+		}
+		if (message.contains(";)")) {
+			message.replace(";)", QString::fromUtf8("\U0001F609"));
+		}
 		ui.textEdit->append(m_userName + ": " + message);
-	}
-	
 
+		ui.lineEditMessage->clear();
+		ui.textEdit->moveCursor(QTextCursor::End);
+	}
 }
 
 void FormMessenger::on_btnEmoji_clicked()
 {
+	QDialog* emojiDialog = new QDialog(this);
+	QVBoxLayout* emojiLayout = new QVBoxLayout(emojiDialog);
+	emojiDialog->setLayout(emojiLayout);
+	emojiDialog->setWindowTitle("Emojis");
 
+	QScrollArea* scrollArea = new QScrollArea(emojiDialog);
+	scrollArea->setWidgetResizable(true);
+	emojiLayout->addWidget(scrollArea);
+
+	QWidget* emojiWidget = new QWidget(scrollArea);
+	scrollArea->setWidget(emojiWidget);
+
+	QGridLayout* emojiGrid = new QGridLayout(emojiWidget);
+	emojiWidget->setLayout(emojiGrid);
+
+	// Add emoji buttons to the grid
+	QPushButton* emojiButton = new QPushButton(QString::fromUtf8("\U0001F642"), emojiWidget);
+	emojiGrid->addWidget(emojiButton, 0, 0);
+	connect(emojiButton, &QPushButton::clicked, this, [this]() { insertEmoji(QString::fromUtf8("\U0001F642")); });
+
+	emojiButton = new QPushButton(QString::fromUtf8("\U0001F641"), emojiWidget);
+	emojiGrid->addWidget(emojiButton, 0, 1);
+	connect(emojiButton, &QPushButton::clicked, this, [this]() { insertEmoji(QString::fromUtf8("\U0001F641")); });
+
+	emojiButton = new QPushButton(QString::fromUtf8("\U0001F601"), emojiWidget);
+	emojiGrid->addWidget(emojiButton, 0, 1);
+	connect(emojiButton, &QPushButton::clicked, this, [this]() { insertEmoji(QString::fromUtf8("\U0001F601")); });
+
+	QPushButton* closeButton = new QPushButton(tr("Close"), emojiDialog);
+	emojiLayout->addWidget(closeButton);
+	connect(closeButton, &QPushButton::clicked, emojiDialog, &QDialog::reject);
+
+	emojiDialog->exec();
+}
+
+void FormMessenger::insertEmoji(const QString& emoji)
+{
+	ui.lineEditMessage->insert(emoji);
 }
 
 void FormMessenger::receiveMessages()
 {
-    while (true) {
-        char buffer[1024] = { 0 };
-        int bytesReceived = recv(client.clientSocket, buffer, 1023, 0);
-        if (bytesReceived == SOCKET_ERROR) {
-            int errorCode = WSAGetLastError();
-            qDebug() << "Socket error: " << errorCode;
-            break;
-        }
+	while (true) {
+		char buffer[1024] = { 0 };
+		int bytesReceived = recv(client.clientSocket, buffer, 1023, 0);
+		if (bytesReceived == SOCKET_ERROR) {
+			int errorCode = WSAGetLastError();
+			qDebug() << "Socket error: " << errorCode;
+			break;
+		}
 		int img_size = 0; // Track the size of the image data received so far
-		char* img_data = nullptr; // Allocate a buffer to hold the image data
+		std::vector<char> img_data; // Use std::vector to hold the image data
 
-        if (bytesReceived > 0) {
+		if (bytesReceived > 0) {
 			buffer[bytesReceived] = '\0';
 			if (strstr(buffer, "<img")) {
 				while (!strstr(buffer, ">"))
 				{
-					// Reallocate the buffer to hold the new data
-					img_data = (char*)realloc(img_data, img_size + bytesReceived + 1);
-					if (img_data == nullptr)
-					{
-						printf("Error allocating memory for image data.\n");
-						return;
-					}
+					// Resize the vector to hold the new data
+					img_data.resize(img_size + bytesReceived + 1);
 
-					// Append the newly received data to the img_data buffer
-					memcpy(img_data + img_size, buffer, bytesReceived);
-					*(img_data + img_size + bytesReceived) = '\0'; // add null character
+					// Append the newly received data to the img_data vector
+					std::copy(buffer, buffer + bytesReceived, img_data.begin() + img_size);
 					img_size += bytesReceived;
 
 					// Read more data from the socket
@@ -151,31 +222,60 @@ void FormMessenger::receiveMessages()
 					}
 				}
 
-				// Append the final portion of the image data to the img_data buffer
+				// Append the final portion of the image data to the img_data vector
 
-				img_data = (char*)realloc(img_data, img_size + bytesReceived + 1);
-				if (img_data == nullptr)
-				{
-					printf("Error allocating memory for image data.\n");
-					return;
-				}
-
-				memcpy(img_data + img_size, buffer, bytesReceived);
-				*(img_data + img_size + bytesReceived) = '\0'; // add null character
+				img_data.resize(img_size + bytesReceived + 1);
+				std::copy(buffer, buffer + bytesReceived, img_data.begin() + img_size);
 				img_size += bytesReceived;
-			
-				ui.textEdit->append(img_data);
-            } 
+
+				ui.textEdit->append(img_data.data());
+			}
 			else {
-                // Display the text message in the text edit
-                ui.textEdit->append(QString(buffer));
-            }
-        }
-		free(img_data);
-    }
+				// Display the text message in the text edit
+				QString message = buffer;
+				if (message.contains(":)")) {
+					message.replace(":)", QString::fromUtf8("\U0001F642"));
+				}
+				if (message.contains(":(")) {
+					message.replace(":(", QString::fromUtf8("\U0001F641"));
+				}
+				if (message.contains(":D")) {
+					message.replace(":D", QString::fromUtf8("\U0001F603"));
+				}
+				if (message.contains("XD")) {
+					message.replace("XD", QString::fromUtf8("\U0001F606"));
+				}
+				if (message.contains(":p")) {
+					message.replace(":p", QString::fromUtf8("\U0001F61B"));
+				}
+				if (message.contains(":o")) {
+					message.replace(":o", QString::fromUtf8("\U0001F62E"));
+				}
+				if (message.contains(";p")) {
+					message.replace(";p", QString::fromUtf8("\U0001F61C"));
+				}
+				if (message.contains(":|")) {
+					message.replace(":|", QString::fromUtf8("\U0001F610"));
+				}
+				if (message.contains(":O")) {
+					message.replace(":O", QString::fromUtf8("\U0001F62F"));
+				}
+				if (message.contains(":S")) {
+					message.replace(":S", QString::fromUtf8("\U0001F616"));
+				}
+				if (message.contains(":*")) {
+					message.replace(":*", QString::fromUtf8("\U0001F617"));
+				}
+				if (message.contains(":^)")) {
+					message.replace(":^)", QString::fromUtf8("\U0001F60F"));
+				}
+				if (message.contains(";)")) {
+					message.replace(";)", QString::fromUtf8("\U0001F609"));
+				}
+				ui.textEdit->append(message);
+			}
+			ui.textEdit->moveCursor(QTextCursor::End);
+		}
+		img_data.clear();
+	}
 }
-
-
-
-
-

@@ -12,6 +12,8 @@
 #include <QBuffer>
 #include <QPixmap>
 #include <QLabel>
+#include <QShortcut>
+#include <QScrollArea>
 
 using namespace std;
 
@@ -34,6 +36,7 @@ private slots:
 	void on_btnPicture_clicked();
 	void on_btnSend_clicked();
 	void on_btnEmoji_clicked();
+	void insertEmoji(const QString& emoji);
 	void receiveMessages();
 
 };

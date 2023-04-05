@@ -3,6 +3,7 @@
 #include <QtWidgets/QMainWindow>
 #include "ui_FormName.h"
 #include "FormMessenger.h"
+#include <QShortcut>
 
 class FormName : public QMainWindow
 {
