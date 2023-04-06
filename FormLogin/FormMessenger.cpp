@@ -61,6 +61,14 @@ void FormMessenger::handleClientData(int page, QString username, QString avatarP
 
 	std::thread receiveThread(&FormMessenger::receiveMessages, this);
 	receiveThread.detach();
+	QShortcut *shortcut = new QShortcut(QKeySequence(Qt::Key_Return), this);
+	connect(shortcut, SIGNAL(activated()), this, SLOT(on_btnSend_clicked()));
+	
+}
+
+FormMessenger::~FormMessenger()
+{
+	
 }
 
 
@@ -105,6 +113,7 @@ void FormMessenger::on_btnPicture_clicked()
 	ui.textEdit->append(imageTag);
 	ui.textEdit->moveCursor(QTextCursor::End);
 	//ui.textEdit->insertPlainText(imageTag);
+
 }
 
 void FormMessenger::on_btnSend_clicked()
