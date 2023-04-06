@@ -13,10 +13,7 @@
 #include <QPixmap>
 #include <QLabel>
 #include <QShortcut>
-<<<<<<< HEAD
 #include <QScrollArea>
-=======
->>>>>>> cc68498a3f771d3584b0a1fbd3b445c56af3c42a
 
 using namespace std;
 

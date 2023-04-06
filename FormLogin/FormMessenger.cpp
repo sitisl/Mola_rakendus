@@ -4,7 +4,6 @@ FormMessenger::FormMessenger(QWidget* parent)
 	: QMainWindow(parent)
 {
 	ui.setupUi(this);
-	setWindowIcon(QIcon(":/myresources/icons/Mola.png"));
 	ui.textEdit->setReadOnly(TRUE);
 	QShortcut* shortcut = new QShortcut(QKeySequence(Qt::Key_Return), this);
 	connect(shortcut, SIGNAL(activated()), this, SLOT(on_btnSend_clicked()));
@@ -12,7 +11,6 @@ FormMessenger::FormMessenger(QWidget* parent)
 
 FormMessenger::~FormMessenger()
 {
-
 }
 
 void FormMessenger::handleClientData(int page, QString username, QString avatarPath)
@@ -61,16 +59,7 @@ void FormMessenger::handleClientData(int page, QString username, QString avatarP
 
 	std::thread receiveThread(&FormMessenger::receiveMessages, this);
 	receiveThread.detach();
-	QShortcut *shortcut = new QShortcut(QKeySequence(Qt::Key_Return), this);
-	connect(shortcut, SIGNAL(activated()), this, SLOT(on_btnSend_clicked()));
-	
 }
-
-FormMessenger::~FormMessenger()
-{
-	
-}
-
 
 void FormMessenger::on_btnPicture_clicked()
 {

@@ -29,7 +29,7 @@ SOCKET createSocket() {
 }
 
 void initClient(unsigned int port, sockaddr_in* clientService) {
-    InetPton(AF_INET, _T("172.20.10.10"), &clientService->sin_addr.s_addr);
+    InetPton(AF_INET, _T(LOOPBACK_ADDRESS), &clientService->sin_addr.s_addr);
     clientService->sin_family = AF_INET;
     clientService->sin_port = htons(PORT);
     memset(clientService->sin_zero, 0, 8);
