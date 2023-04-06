@@ -1,16 +1,24 @@
 #include "FormMessenger.h"
 
-FormMessenger::FormMessenger(QString userName, QString avatar, QWidget* parent)
-	: QMainWindow(parent),
-	m_userName(userName),
-	m_avatarPath(avatar)
+FormMessenger::FormMessenger(QWidget* parent)
+	: QMainWindow(parent)
 {
 	ui.setupUi(this);
 	setWindowIcon(QIcon(":/myresources/icons/Mola.png"));
 	ui.textEdit->setReadOnly(TRUE);
+	QShortcut* shortcut = new QShortcut(QKeySequence(Qt::Key_Return), this);
+	connect(shortcut, SIGNAL(activated()), this, SLOT(on_btnSend_clicked()));
+}
 
-	// Init lib =====================================
+FormMessenger::~FormMessenger()
+{
 
+}
+
+void FormMessenger::handleClientData(int page, QString username, QString avatarPath)
+{
+	m_userName = username;
+	m_avatarPath = avatarPath;
 	initSocketLib();
 
 	// SETUP socket =================================
@@ -51,23 +59,8 @@ FormMessenger::FormMessenger(QString userName, QString avatar, QWidget* parent)
 	}
 	send(client.clientSocket, m_avatarPath.toUtf8().constData(), m_avatarPath.size(), 0);
 
-	QThread* thread = new QThread;
-	this->moveToThread(thread);
-
-	// Connect the thread's started signal to the receiveMessages function
-	connect(thread, &QThread::started, this, &FormMessenger::receiveMessages);
-
-	// Start the thread
-	thread->start();
-
-	QShortcut* shortcut = new QShortcut(QKeySequence(Qt::Key_Return), this);
-	connect(shortcut, SIGNAL(activated()), this, SLOT(on_btnSend_clicked()));
-
-}
-
-FormMessenger::~FormMessenger()
-{
-
+	std::thread receiveThread(&FormMessenger::receiveMessages, this);
+	receiveThread.detach();
 }
 
 
@@ -100,8 +93,6 @@ void FormMessenger::on_btnPicture_clicked()
 
 	// Send image data over the socket
 	send(client.clientSocket, imageTag.data(), imageTag.size(), 0);
-
-	send(client.clientSocket, m_avatarPath.toUtf8().constData(), m_avatarPath.size(), 0);
 
 	// Append the image tag to the text edit
 	ui.textEdit->append("\n");
@@ -304,7 +295,19 @@ void FormMessenger::receiveMessages()
 			}
 			else {
 				// Display the text message in the text edit
-				ui.textEdit->append(QString(buffer));
+				QString msg = QString::fromUtf8(buffer, bytesReceived);
+				QStringList parts = msg.split("<PATH>");
+				if (parts.size() == 2) {
+					QString iconPath = parts[0];
+					QString message = parts[1];
+					ui.textEdit->append("\n");
+					QString timeStamp = QTime::currentTime().toString("hh:mm:ss");
+					QImage imageAvatar(iconPath);
+					imageAvatar = imageAvatar.scaledToHeight(30, Qt::SmoothTransformation);
+					QTextCursor cursor(ui.textEdit->textCursor());
+					cursor.insertImage(imageAvatar);
+					cursor.insertText(timeStamp + "  " + message);
+				}
 			}
 			ui.textEdit->moveCursor(QTextCursor::End);
 		}

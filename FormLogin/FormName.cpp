@@ -5,7 +5,6 @@ FormName::FormName(QWidget *parent)
     : QMainWindow(parent)
 {
     ui.setupUi(this);
-    setWindowIcon(QIcon(":/myresources/icons/Mola.png"));
     //Create shortcut for return key, to login when pressing enter.
     QShortcut *shortcut = new QShortcut(QKeySequence(Qt::Key_Return), this);
     QObject::connect(shortcut, SIGNAL(activated()), ui.btnJatka, SLOT(click()));
@@ -25,9 +24,7 @@ void FormName::on_btnJatka_clicked()
     QString strUserName = ui.lineNimi->text();
     if (strUserName != "" && strUserName.length() < 25)
     {
-        hide();
-        formMessenger = new FormMessenger(strUserName, avatarPath, this);
-        formMessenger->show();
+        emit switchToMessenger(1, strUserName, avatarPath);
     }
     else
     {

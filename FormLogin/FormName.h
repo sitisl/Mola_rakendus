@@ -18,6 +18,9 @@ private slots:
     void on_btnAvatar_clicked();
     void insertAvatar(const QString& avatarIconPath);
 
+signals:
+    void switchToMessenger(int page, QString username, QString avatarPath);
+
 private:
     QString avatarPath;
     Ui::QMainWindow ui;

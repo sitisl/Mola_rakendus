@@ -22,7 +22,7 @@ class FormMessenger : public QMainWindow
 	Q_OBJECT
 
 public:
-	FormMessenger(QString userName, QString avatar, QWidget *parent = nullptr);
+	FormMessenger(QWidget *parent = nullptr);
 	~FormMessenger();
 
 private:
@@ -32,6 +32,7 @@ private:
 	clientInfo_t client;
 
 public slots:
+	void handleClientData(int page, QString username, QString avatarPath);
 
 private slots:
 	void on_btnPicture_clicked();

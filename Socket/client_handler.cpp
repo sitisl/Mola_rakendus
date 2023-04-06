@@ -145,7 +145,7 @@ void HandleClientData(serverInfo_t* serv, clientInfo_t* client)
                             if (client->clientSocket[j] > 0 && client->clientSocket[j] != client->clientSocket[i])
                             {
                                 char msg_buf[1024] = { 0 };
-                                sprintf(msg_buf, "%s:", client->clientName[i]);
+                                sprintf(msg_buf, "%s<PATH>%s:", client->clientIcon[i], client->clientName[i]);
                                 send(client->clientSocket[j], msg_buf, strlen(msg_buf), 0);
                                 send(client->clientSocket[j], img_data, img_size, 0);
                             }
@@ -161,7 +161,7 @@ void HandleClientData(serverInfo_t* serv, clientInfo_t* client)
                             if (client->clientSocket[j] > 0 && client->clientSocket[j] != client->clientSocket[i])
                             {
                                 char msg_buf[1024] = { 0 };
-                                sprintf(msg_buf, "%s  %s: %s", client->clientIcon[i], client->clientName[i], receive_buf);
+                                sprintf(msg_buf, "%s<PATH>%s: %s", client->clientIcon[i], client->clientName[i], receive_buf);
                                 send(client->clientSocket[j], msg_buf, strlen(msg_buf), 0);
                             }
                         }
