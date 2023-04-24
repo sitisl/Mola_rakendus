@@ -18,18 +18,24 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="init.cpp">
+    <ClCompile Include="initServ.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CSocket.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="client_handler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="init.h">
+    <ClInclude Include="initServ.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CSocket.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="client_handler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

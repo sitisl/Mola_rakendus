@@ -32,14 +32,14 @@
     <Import Project="$(QtMsBuild)\qt_defaults.props" />
   </ImportGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
-    <QtInstall>6.4.2_msvc2019_64</QtInstall>
-    <QtModules>core;gui;widgets</QtModules>
+    <QtModules>core;gui;widgets;network</QtModules>
     <QtBuildConfig>debug</QtBuildConfig>
+    <QtInstall>6.2.4_msvc2019_64</QtInstall>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
-    <QtInstall>6.4.2_msvc2019_64</QtInstall>
-    <QtModules>core;gui;widgets</QtModules>
+    <QtModules>core;gui;widgets;network</QtModules>
     <QtBuildConfig>release</QtBuildConfig>
+    <QtInstall>6.4.2_msvc2019_64</QtInstall>
   </PropertyGroup>
   <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
     <Message Importance="High" Text="QtMsBuild: could not locate qt.targets, qt.props; project may not build correctly." />
@@ -63,7 +63,6 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>C:\Users\rannr\source\repos\Mola\Qt-Frameless-Window-DarkStyle-master\Qt-Frameless-Window-DarkStyle-master\framelesswindow;C:\Users\rannr\source\repos\Mola\Qt-Frameless-Window-DarkStyle-master\Qt-Frameless-Window-DarkStyle-master;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -94,17 +93,26 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <QtRcc Include="FormLogin.qrc" />
-    <QtRcc Include="resources.qrc" />
-    <QtUic Include="FormLogin.ui" />
-    <QtMoc Include="FormLogin.h" />
-    <ClCompile Include="FormLogin.cpp" />
     <ClCompile Include="FormMessenger.cpp" />
+    <ClCompile Include="FormName.cpp" />
+    <ClCompile Include="initClient.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ReceiveThread.cpp" />
     <QtUic Include="FormMessenger.ui" />
+    <QtUic Include="FormName.ui" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="FormMessenger.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="FormName.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtRcc Include="resources.qrc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="initClient.h" />
+    <QtMoc Include="ReceiveThread.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

@@ -8,12 +8,10 @@
 #include <Windows.h>
 #include <iostream>
 #include <tchar.h>
-#include "init.h"
-#include "CSocket.h"
+#include "initServ.h"
+#include "client_handler.h"
 
 #pragma comment(lib, "ws2_32.lib")
-
-#define	LOOPBACK_ADDRESS "127.0.0.1"
 
 using namespace std;
 
@@ -21,59 +19,120 @@ using namespace std;
 
 const char szHost[] = "www.google.com";
 
-socket_t server;
+
 
 int main(const int argc, const char* argv[]) {
+
+	serverInfo_t server{0,};
+	clientInfo_t client{0,};
 
 	// Init WINSOCK
 	initSocketLib();
 
-	server.socket = createSocket();
+	server.listener_socket = createSocket(); // Create socket 
 
-	server.addr = initServer(PORT, LOOPBACK_ADDRESS);
+	server.addr = initServer(PORT, LOOPBACK_ADDRESS); // Init server with port and address, address can be loopback or the IPv4 of server PC
 
-	if (bindSocket(server) != 1) return 0;
+	if (bindSocket(server) != 1) return 0;	// Bind socket and server
 
-	if (listenConnection(server.socket, MAX_CONNECTIONS) != 1) return 0;
-
-	SOCKET accepted_sck = acceptConnection(server.socket);
-
-	int nRet;
-	char buf[1024];
-	char clientIP[INET_ADDRSTRLEN];
-
-	getClientIP(clientIP, accepted_sck);
-	printf("Client IP address: %s\n", clientIP);
-
-	/*sockaddr_in clientaddr;
-	int clientaddrlen = sizeof(clientaddr);
-	getpeername(accepted_sck, (sockaddr*)&clientaddr, &clientaddrlen);
-
-	inet_ntop(af_inet, &clientaddr.sin_addr, clientip, inet_addrstrlen);*/
-
-
-	while (1) {
-		memset(buf, 0, 1024);
-
-		nRet = recv(accepted_sck, buf, sizeof(buf), 0);
-		if (nRet > 0) {
-			printf("%s sent: %s\n", clientIP, buf);
-		}
-		else if (nRet == 0) {
-			printf("Did not reveive\n");
-		}
-		else {
-			printf("Client disconnected, closing socket\n");
-			closesocket(server.socket);
-			WSACleanup();
-			return 1;
-		}
-
+	int addrLen = sizeof(server.addr);
+	if (getsockname(server.listener_socket, (sockaddr*)&server.addr, &addrLen) == SOCKET_ERROR) {
+		printf("Couldnt get server name\n");
+		return 0;
 	}
 
-	nRet = recv(accepted_sck, buf, sizeof(buf), 0);
+	inet_ntop(AF_INET, &(server.addr.sin_addr), server.IP, INET_ADDRSTRLEN);
 
-	printf("%s", buf);
+	// Print the server IP address
+	printf("Server IP: %s\n", server.IP);
+
+	if (listenConnection(server.listener_socket, MAX_CONNECTIONS) != 1) return 0; // The entered socket is always listening.
+
+	// TODO: create a multiple client handler
+	// There are 2 options to do this,
+	// 1) Is to use multithreading with <thread> header
+	// 2) RECOMMENDED, is to use fd_set data structure, and select() function
+	// 
+	// TODO: If multi client done, let each client choose their username
+	// The ip aadress is always the same for incoming clients, only the PORT is unique
+	// This means we can use assign each port a different name, somehow
+
+	struct timeval tv = { 1,0 }; // 1 sec, 0 us
+
+	// Used in select function, that handles fd_set.
+
+	
+
+	server.maxFd = server.listener_socket + 1;
+	int nRet = 0;
+
+	while (1) {
+
+		FD_ZERO(&server.fr);
+		FD_SET(server.listener_socket, &server.fr);
+
+		for (int i = 0; i < MAX_CONNECTIONS; i++) // This loops over max client sockets 
+		{										  // and sets them to be reading sockets	
+			if (client.clientSocket[i] > 0)
+			{
+				FD_SET(client.clientSocket[i], &server.fr);
+			}
+		}
+
+		nRet = select(MAX_CONNECTIONS, &server.fr, NULL, NULL, &tv);
+		if (nRet < 0) {
+			printf("Select API call failed %d\n", WSAGetLastError());
+			return 0;
+		}
+		else if (nRet == 0) {
+			//printf("No client at port waiting for connections\n");
+		}
+		else 
+		{ 
+			// This is true when client waiting to connect
+		    // or data to be received from client
+
+			if (FD_ISSET(server.listener_socket, &server.fr)) // Hanlde new connection
+			{
+				HandleNewConnection(&server, &client);
+			}
+			else
+			{
+				//printf("Client sent some data\n");
+				HandleClientData(&server,&client);
+			}
+		}
+	}
+
+	//----------------Handles only one client--------------------
+
+	//SOCKET accepted_sck = acceptConnection(server.socket); // For incoming connections a new socket is created
+
+	//int nRet;
+	//char buf[1024];
+	//char clientIP[INET_ADDRSTRLEN];
+
+	//getClientIP(clientIP, accepted_sck);
+	//printf("Client IP address: %s\n", clientIP);
+
+	//while (1) {
+	//	memset(buf, 0, 1024);
+
+	//	nRet = recv(accepted_sck, buf, sizeof(buf), 0);
+	//	if (nRet > 0) {
+	//		printf("%s sent: %s\n", clientIP, buf);
+	//	}
+	//	else if (nRet == 0) {
+	//		printf("Did not reveive\n");
+	//	}
+	//	else {
+	//		printf("Client disconnected, closing socket\n");
+	//		closesocket(server.socket);
+	//		WSACleanup();
+	//		return 1;
+	//	}
+	//}
+	////--------------------------------------------------------
 
 	return 1;
 }
