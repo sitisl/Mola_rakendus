@@ -7,8 +7,6 @@
 int main(int argc, char *argv[])
 {
     Q_INIT_RESOURCE(resources);
-    //QFont amazingFont("Consolas", 8, QFont::Monospace, true);
-    //QApplication::setFont(amazingFont);
     QApplication application(argc, argv);
     QIcon windowIcon(":/myresources/icons/Mola.png");
     application.setWindowIcon(windowIcon);
@@ -26,6 +24,8 @@ int main(int argc, char *argv[])
     FormName formName;
     FormMessenger formMessenger;
     stackedWidget.addWidget(&formName);
+    //QWidget* formN = stackedWidget.widget(0);
+    //formN->setFixedSize(600, 400);
     stackedWidget.addWidget(&formMessenger);
 
     // Set the stacked widget as the main widget for the application

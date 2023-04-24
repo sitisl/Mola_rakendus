@@ -14,6 +14,7 @@ FormName::FormName(QWidget *parent)
     avatarPath = QString(":/avatars/icons/Asset 1.png");
     QIcon avatarIcon = QIcon(avatarPath);
     ui.btnAvatar->setIcon(avatarIcon);
+    
 }
 
 FormName::~FormName()
@@ -26,9 +27,14 @@ void FormName::on_btnJatka_clicked()
     {
         emit switchToMessenger(1, strUserName, avatarPath);
     }
+    else if (strUserName == "")
+    {
+        ui.statusBar->showMessage("Sisesta kasutajanimi!", 3000);
+    }
     else
     {
-        ui.statusBar->showMessage("Sisesta korrektne kasutajanimi.", 3000);
+        ui.statusBar->showMessage("Kasutajanimi liiga pikk!", 3000);
+        ui.lineNimi->clear();
     }
 
 }
