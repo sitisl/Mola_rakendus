@@ -14,6 +14,7 @@ FormName::FormName(QWidget *parent)
     avatarPath = QString(":/avatars/icons/Asset 1.png");
     QIcon avatarIcon = QIcon(avatarPath);
     ui.btnAvatar->setIcon(avatarIcon);
+    
 }
 
 FormName::~FormName()
@@ -26,9 +27,14 @@ void FormName::on_btnJatka_clicked()
     {
         emit switchToMessenger(1, strUserName, avatarPath);
     }
+    else if (strUserName == "")
+    {
+        ui.statusBar->showMessage("Sisesta kasutajanimi!", 3000);
+    }
     else
     {
-        ui.statusBar->showMessage("Sisesta korrektne kasutajanimi.", 3000);
+        ui.statusBar->showMessage("Kasutajanimi liiga pikk!", 3000);
+        ui.lineNimi->clear();
     }
 
 }
@@ -73,6 +79,7 @@ void FormName::on_btnAvatar_clicked()
         avatarButton->setIcon(Icon);
         avatarGrid->addWidget(avatarButton, i / 3, i % 3);
         connect(avatarButton, &QPushButton::clicked, this, [this, path = AVATAR_PATHS[i]]() { insertAvatar(path); });
+        connect(avatarButton, &QPushButton::clicked, avatarDialog, &QDialog::reject);
     }
 
 	QPushButton* closeButton = new QPushButton(tr("Close"), avatarDialog);
