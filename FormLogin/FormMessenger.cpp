@@ -11,6 +11,14 @@ FormMessenger::FormMessenger(QWidget* parent)
 
 FormMessenger::~FormMessenger()
 {
+	WSACleanup();
+	closesocket(client.clientSocket);
+	if (m_receiveThread) {
+		m_receiveThread->quit();
+		m_receiveThread->wait();
+		delete m_receiveThread;
+		m_receiveThread = nullptr;
+	}
 }
 
 void FormMessenger::handleClientData(int page, QString username, QString avatarPath)
@@ -57,8 +65,13 @@ void FormMessenger::handleClientData(int page, QString username, QString avatarP
 	}
 	send(client.clientSocket, m_avatarPath.toUtf8().constData(), m_avatarPath.size(), 0);
 
-	std::thread receiveThread(&FormMessenger::receiveMessages, this);
-	receiveThread.detach();
+	//std::thread receiveThread(&FormMessenger::receiveMessages, this);
+	//receiveThread.detach();
+	m_receiveThread = new ReceiveThread(client, this);
+	connect(m_receiveThread, SIGNAL(usersReceived(QString)), this, SLOT(onUsersReceived(QString)));
+	connect(m_receiveThread, SIGNAL(messageReceived(QString, QImage)), this, SLOT(onMessageReceived(QString, QImage)));
+	connect(m_receiveThread, SIGNAL(imageReceived(QByteArray)), this, SLOT(onImageReceived(QByteArray)));
+	m_receiveThread->start();
 }
 
 void FormMessenger::on_btnPicture_clicked()
@@ -95,7 +108,7 @@ void FormMessenger::on_btnPicture_clicked()
 	ui.textEdit->append("\n");
 	QString timeStamp = QTime::currentTime().toString("hh:mm:ss");
 	QImage imageAvatar(m_avatarPath);
-	imageAvatar = imageAvatar.scaledToHeight(30, Qt::SmoothTransformation);
+	imageAvatar = imageAvatar.scaled(QSize(30, 30), Qt::KeepAspectRatio, Qt::SmoothTransformation);
 	QTextCursor cursor(ui.textEdit->textCursor());
 	cursor.insertImage(imageAvatar);
 	cursor.insertText(timeStamp + "  " + m_userName + ": ");
@@ -111,8 +124,27 @@ void FormMessenger::on_btnSend_clicked()
 	if (message != "" && message.length() < 1024) {
 		ui.textEdit->append("\n");
 		QString timeStamp = QTime::currentTime().toString("hh:mm:ss");
-		send(client.clientSocket, message.toUtf8().constData(), message.size(), 0);
+		//send(client.clientSocket, message.toUtf8().constData(), message.size(), 0);
+		// Convert the QString to a wide character string
+		LPCWSTR wideStr = (LPCWSTR)message.utf16();
+		int wideStrLen = message.length();
+
+		// Calculate the required size of the multibyte character string
+		int mbStrLen = WideCharToMultiByte(CP_UTF8, 0, wideStr, wideStrLen, NULL, 0, NULL, NULL);
+
+		// Allocate memory for the multibyte character string and convert the wide character string to it
+		char* mbStr = new char[mbStrLen + 1];
+		WideCharToMultiByte(CP_UTF8, 0, wideStr, wideStrLen, mbStr, mbStrLen, NULL, NULL);
+		mbStr[mbStrLen] = '\0';
+
+		// Send the message using the multibyte character string
+		send(client.clientSocket, mbStr, mbStrLen, 0);
+
+		// Free the memory allocated for the multibyte character string
+		delete[] mbStr;
+
 		QImage imageAvatar(m_avatarPath);
+		//int avatarHeight = ui.textEdit->fontMetrics().height();
 		imageAvatar = imageAvatar.scaledToHeight(30, Qt::SmoothTransformation);
 		QTextCursor cursor(ui.textEdit->textCursor());
 		cursor.insertImage(imageAvatar);
@@ -127,7 +159,7 @@ void FormMessenger::on_btnEmoji_clicked()
 	QDialog* emojiDialog = new QDialog(this);
 	QVBoxLayout* emojiLayout = new QVBoxLayout(emojiDialog);
 	emojiDialog->setLayout(emojiLayout);
-	emojiDialog->setWindowTitle("Emojis");
+	emojiDialog->setWindowTitle("Emotikonid");
 
 	QScrollArea* scrollArea = new QScrollArea(emojiDialog);
 	scrollArea->setWidgetResizable(true);
@@ -140,57 +172,61 @@ void FormMessenger::on_btnEmoji_clicked()
 	emojiWidget->setLayout(emojiGrid);
 
 	// Add emoji buttons to the grid
-	QPushButton* emojiButton = new QPushButton(QString::fromUtf8("\U0001F642"), emojiWidget);
+	QPushButton* emojiButton = new QPushButton("\U0001F642", emojiWidget);
 	emojiGrid->addWidget(emojiButton, 0, 0);
-	connect(emojiButton, &QPushButton::clicked, this, [this]() { insertEmoji(QString::fromUtf8("\U0001F642")); });
+	connect(emojiButton, &QPushButton::clicked, this, [this]() { insertEmoji("\U0001F642"); });
 
-	emojiButton = new QPushButton(QString::fromUtf8("\U0001F641"), emojiWidget);
+	emojiButton = new QPushButton("\U0001F641", emojiWidget);
 	emojiGrid->addWidget(emojiButton, 0, 1);
-	connect(emojiButton, &QPushButton::clicked, this, [this]() { insertEmoji(QString::fromUtf8("\U0001F641")); });
+	connect(emojiButton, &QPushButton::clicked, this, [this]() { insertEmoji("\U0001F641"); });
 
-	emojiButton = new QPushButton(QString::fromUtf8("\U0001F603"), emojiWidget);
+	emojiButton = new QPushButton("\U0001F603", emojiWidget);
 	emojiGrid->addWidget(emojiButton, 1, 0);
-	connect(emojiButton, &QPushButton::clicked, this, [this]() { insertEmoji(QString::fromUtf8("\U0001F603")); });
+	connect(emojiButton, &QPushButton::clicked, this, [this]() { insertEmoji("\U0001F603"); });
 
-	emojiButton = new QPushButton(QString::fromUtf8("\U0001F606"), emojiWidget);
+	emojiButton = new QPushButton("\U0001F606", emojiWidget);
 	emojiGrid->addWidget(emojiButton, 1, 1);
-	connect(emojiButton, &QPushButton::clicked, this, [this]() { insertEmoji(QString::fromUtf8("\U0001F606")); });
+	connect(emojiButton, &QPushButton::clicked, this, [this]() { insertEmoji("\U0001F606"); });
 
-	emojiButton = new QPushButton(QString::fromUtf8("\U0001F61B"), emojiWidget);
+	emojiButton = new QPushButton("\U0001F61B", emojiWidget);
 	emojiGrid->addWidget(emojiButton, 2, 0);
-	connect(emojiButton, &QPushButton::clicked, this, [this]() { insertEmoji(QString::fromUtf8("\U0001F61B")); });
+	connect(emojiButton, &QPushButton::clicked, this, [this]() { insertEmoji("\U0001F61B"); });
 
-	emojiButton = new QPushButton(QString::fromUtf8("\U0001F62E"), emojiWidget);
+	emojiButton = new QPushButton("\U0001F62E", emojiWidget);
 	emojiGrid->addWidget(emojiButton, 2, 1);
-	connect(emojiButton, &QPushButton::clicked, this, [this]() { insertEmoji(QString::fromUtf8("\U0001F62E")); });
+	connect(emojiButton, &QPushButton::clicked, this, [this]() { insertEmoji("\U0001F62E"); });
 
-	emojiButton = new QPushButton(QString::fromUtf8("\U0001F61C"), emojiWidget);
+	emojiButton = new QPushButton("\U0001F61C", emojiWidget);
 	emojiGrid->addWidget(emojiButton, 3, 0);
-	connect(emojiButton, &QPushButton::clicked, this, [this]() { insertEmoji(QString::fromUtf8("\U0001F61C")); });
+	connect(emojiButton, &QPushButton::clicked, this, [this]() { insertEmoji("\U0001F61C"); });
 
-	emojiButton = new QPushButton(QString::fromUtf8("\U0001F610"), emojiWidget);
+	emojiButton = new QPushButton("\U0001F610", emojiWidget);
 	emojiGrid->addWidget(emojiButton, 3, 1);
-	connect(emojiButton, &QPushButton::clicked, this, [this]() { insertEmoji(QString::fromUtf8("\U0001F610")); });
+	connect(emojiButton, &QPushButton::clicked, this, [this]() { insertEmoji("\U0001F610"); });
 
-	emojiButton = new QPushButton(QString::fromUtf8("\U0001F62F"), emojiWidget);
+	emojiButton = new QPushButton("\U0001F62F", emojiWidget);
 	emojiGrid->addWidget(emojiButton, 4, 0);
-	connect(emojiButton, &QPushButton::clicked, this, [this]() { insertEmoji(QString::fromUtf8("\U0001F62F")); });
+	connect(emojiButton, &QPushButton::clicked, this, [this]() { insertEmoji("\U0001F62F"); });
 
-	emojiButton = new QPushButton(QString::fromUtf8("\U0001F616"), emojiWidget);
+	emojiButton = new QPushButton("\U0001F616", emojiWidget);
 	emojiGrid->addWidget(emojiButton, 4, 1);
-	connect(emojiButton, &QPushButton::clicked, this, [this]() { insertEmoji(QString::fromUtf8("\U0001F616")); });
+	connect(emojiButton, &QPushButton::clicked, this, [this]() { insertEmoji("\U0001F616"); });
 
-	emojiButton = new QPushButton(QString::fromUtf8("\U0001F617"), emojiWidget);
+	emojiButton = new QPushButton("\U0001F617", emojiWidget);
 	emojiGrid->addWidget(emojiButton, 5, 0);
-	connect(emojiButton, &QPushButton::clicked, this, [this]() { insertEmoji(QString::fromUtf8("\U0001F617")); });
+	connect(emojiButton, &QPushButton::clicked, this, [this]() { insertEmoji("\U0001F617"); });
 
-	emojiButton = new QPushButton(QString::fromUtf8("\U0001F60F"), emojiWidget);
+	emojiButton = new QPushButton("\U0001F60F", emojiWidget);
 	emojiGrid->addWidget(emojiButton, 5, 1);
-	connect(emojiButton, &QPushButton::clicked, this, [this]() { insertEmoji(QString::fromUtf8("\U0001F60F")); });
+	connect(emojiButton, &QPushButton::clicked, this, [this]() { insertEmoji("\U0001F60F"); });
 
-	emojiButton = new QPushButton(QString::fromUtf8("\U0001F609"), emojiWidget);
+	emojiButton = new QPushButton("\U0001F609", emojiWidget);
 	emojiGrid->addWidget(emojiButton, 6, 0);
-	connect(emojiButton, &QPushButton::clicked, this, [this]() { insertEmoji(QString::fromUtf8("\U0001F609")); });
+	connect(emojiButton, &QPushButton::clicked, this, [this]() { insertEmoji("\U0001F609"); });
+
+	emojiButton = new QPushButton("\U0001F44D", emojiWidget);
+	emojiGrid->addWidget(emojiButton, 6, 1);
+	connect(emojiButton, &QPushButton::clicked, this, [this]() { insertEmoji("\U0001F44D"); });
 
 	QPushButton* closeButton = new QPushButton(tr("Close"), emojiDialog);
 	emojiLayout->addWidget(closeButton);
@@ -208,48 +244,77 @@ void FormMessenger::on_lineEditMessage_textChanged()
 {
 	QString message = ui.lineEditMessage->text();
 	if (message.contains(":)")) {
-		message.replace(":)", QString::fromUtf8("\U0001F642"));
+		message.replace(":)", "\U0001F642");
 	}
 	if (message.contains(":(")) {
-		message.replace(":(", QString::fromUtf8("\U0001F641"));
+		message.replace(":(", "\U0001F641");
 	}
 	if (message.contains(":D")) {
-		message.replace(":D", QString::fromUtf8("\U0001F603"));
+		message.replace(":D", "\U0001F603");
 	}
 	if (message.contains("XD")) {
-		message.replace("XD", QString::fromUtf8("\U0001F606"));
+		message.replace("XD", "\U0001F606");
 	}
 	if (message.contains(":p")) {
-		message.replace(":p", QString::fromUtf8("\U0001F61B"));
+		message.replace(":p", "\U0001F61B");
 	}
 	if (message.contains(":o")) {
-		message.replace(":o", QString::fromUtf8("\U0001F62E"));
+		message.replace(":o", "\U0001F62E");
 	}
 	if (message.contains(";p")) {
-		message.replace(";p", QString::fromUtf8("\U0001F61C"));
+		message.replace(";p", "\U0001F61C");
 	}
 	if (message.contains(":|")) {
-		message.replace(":|", QString::fromUtf8("\U0001F610"));
+		message.replace(":|", "\U0001F610");
 	}
 	if (message.contains(":O")) {
-		message.replace(":O", QString::fromUtf8("\U0001F62F"));
+		message.replace(":O", "\U0001F62F");
 	}
 	if (message.contains(":S")) {
-		message.replace(":S", QString::fromUtf8("\U0001F616"));
+		message.replace(":S", "\U0001F616");
 	}
 	if (message.contains(":*")) {
-		message.replace(":*", QString::fromUtf8("\U0001F617"));
+		message.replace(":*", "\U0001F617");
 	}
 	if (message.contains(":^)")) {
-		message.replace(":^)", QString::fromUtf8("\U0001F60F"));
+		message.replace(":^)", "\U0001F60F");
 	}
 	if (message.contains(";)")) {
-		message.replace(";)", QString::fromUtf8("\U0001F609"));
+		message.replace(";)", "\U0001F609");
 	}
 	ui.lineEditMessage->setText(message);
 }
 
-void FormMessenger::receiveMessages()
+void FormMessenger::onMessageReceived(QString message, QImage avatar)
+{
+	ui.textEdit->append("\n");
+	if (avatar.isNull()) {
+
+		ui.textEdit->append(message);
+	}
+	else {
+		// Display the text message and avatar in the text edit
+		QTextCursor cursor(ui.textEdit->textCursor());
+		cursor.insertImage(avatar);
+		cursor.insertText(message);
+		ui.textEdit->moveCursor(QTextCursor::End);
+	}
+}
+
+void FormMessenger::onUsersReceived(QString users)
+{
+	ui.textEditKasutajad->clear();
+	ui.textEditKasutajad->append(users);
+}
+
+void FormMessenger::onImageReceived(QByteArray image)
+{
+	ui.textEdit->append(image.data());
+	ui.textEdit->moveCursor(QTextCursor::End);
+}
+
+
+/*void FormMessenger::receiveMessages()
 {
 	while (true) {
 		char buffer[1024] = { 0 };
@@ -312,3 +377,4 @@ void FormMessenger::receiveMessages()
 		img_data.clear();
 	}
 }
+*/

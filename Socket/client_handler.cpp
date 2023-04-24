@@ -47,6 +47,7 @@ void HandleNewConnection(serverInfo_t* serv, clientInfo_t* client)
 		{
 			printf("Server reached max client limit of %d connections\n", MAX_CONNECTIONS);
 		}
+        sendActiveUsers(client);
 	}
 }
 
@@ -66,7 +67,7 @@ void HandleClientData(serverInfo_t* serv, clientInfo_t* client)
             if (FD_ISSET(client->clientSocket[i], &serv->fr))
             {
                 // Read client data
-                char receive_buf[1024] = { 0, };
+                char receive_buf[1024] = { 0 };
                 int img_size = 0; // Track the size of the image data received so far
                 char* img_data = nullptr; // Allocate a buffer to hold the image data
                 int nRet = recv(client->clientSocket[i], receive_buf, sizeof(receive_buf), 0);
@@ -76,12 +77,14 @@ void HandleClientData(serverInfo_t* serv, clientInfo_t* client)
                     FD_CLR(client->clientSocket[i], &serv->fr); // Remove socket from fd_set
                     closesocket(client->clientSocket[i]);
                     client->clientSocket[i] = 0; // Set the socket to 0 so it can be reused later
+                    sendActiveUsers(client);
                 }
                 else if (nRet == 0) {
                     printf("%s Disconnected closing socket\n", client->clientName[i]);
                     FD_CLR(client->clientSocket[i], &serv->fr); // Remove socket from fd_set
                     closesocket(client->clientSocket[i]);
                     client->clientSocket[i] = 0; // Set the socket to 0 so it can be reused later
+                    sendActiveUsers(client);
                 }
                 else
                 {
@@ -113,12 +116,14 @@ void HandleClientData(serverInfo_t* serv, clientInfo_t* client)
                                 FD_CLR(client->clientSocket[i], &serv->fr); // Remove socket from fd_set
                                 closesocket(client->clientSocket[i]);
                                 client->clientSocket[i] = 0; // Set the socket to 0 so it can be reused later
+                                sendActiveUsers(client);
                             }
                             else if (nRet == 0) {
                                 printf("%s Disconnected closing socket\n", client->clientName[i]);
                                 FD_CLR(client->clientSocket[i], &serv->fr); // Remove socket from fd_set
                                 closesocket(client->clientSocket[i]);
                                 client->clientSocket[i] = 0; // Set the socket to 0 so it can be reused later
+                                sendActiveUsers(client);
                             }
                         }
 
@@ -208,4 +213,28 @@ void getClientIcon(char* icon, SOCKET clientSocket)
     // Add null terminator to the end of the received string
     icon[bytesReceived] = '\0';
 
+}
+
+void sendActiveUsers(clientInfo_t* client)
+{
+    char msg_buf[1024] = "Aktiivsed kasutajad:\n";
+    int num_clients = 0;
+    for (int j = 0; j < MAX_CONNECTIONS; j++)
+    {
+        if (client->clientSocket[j] > 0)
+        {
+            if (num_clients > 0) {
+                strcat(msg_buf, "\n");
+            }
+            strcat(msg_buf, client->clientName[j]);
+            num_clients++;
+        }
+    }
+    for (int j = 0; j < MAX_CONNECTIONS; j++)
+    {
+        if (client->clientSocket[j] > 0)
+        {
+            send(client->clientSocket[j], msg_buf, strlen(msg_buf), 0);
+        }
+    }
 }

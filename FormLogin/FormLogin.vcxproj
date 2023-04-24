@@ -97,6 +97,7 @@
     <ClCompile Include="FormName.cpp" />
     <ClCompile Include="initClient.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ReceiveThread.cpp" />
     <QtUic Include="FormMessenger.ui" />
     <QtUic Include="FormName.ui" />
   </ItemGroup>
@@ -111,6 +112,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="initClient.h" />
+    <QtMoc Include="ReceiveThread.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
