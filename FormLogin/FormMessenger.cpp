@@ -63,7 +63,7 @@ void FormMessenger::handleClientData(int page, QString username, QString avatarP
 
 void FormMessenger::on_btnPicture_clicked()
 {
-	QString imagePath = QFileDialog::getOpenFileName(this, tr("Select Image"), "", tr("Images (*.png *.jpg *.jpeg *.bmp)"));
+	QString imagePath = QFileDialog::getOpenFileName(this, tr("Vali pilt"), "", tr("Pildid (*.png *.jpg *.jpeg *.bmp)"));
 	if (imagePath.isEmpty()) {
 		return;
 	}

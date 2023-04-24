@@ -73,6 +73,7 @@ void FormName::on_btnAvatar_clicked()
         avatarButton->setIcon(Icon);
         avatarGrid->addWidget(avatarButton, i / 3, i % 3);
         connect(avatarButton, &QPushButton::clicked, this, [this, path = AVATAR_PATHS[i]]() { insertAvatar(path); });
+        connect(avatarButton, &QPushButton::clicked, avatarDialog, &QDialog::reject);
     }
 
 	QPushButton* closeButton = new QPushButton(tr("Close"), avatarDialog);
