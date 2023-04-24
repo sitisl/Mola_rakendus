@@ -14,6 +14,7 @@
 #include <QLabel>
 #include <QShortcut>
 #include <QScrollArea>
+#include "ReceiveThread.h"
 
 using namespace std;
 
@@ -30,6 +31,7 @@ private:
 	QString m_userName;
 	QString m_avatarPath;
 	clientInfo_t client;
+	ReceiveThread* m_receiveThread;
 
 public slots:
 	void handleClientData(int page, QString username, QString avatarPath);
@@ -40,7 +42,10 @@ private slots:
 	void on_btnEmoji_clicked();
 	void insertEmoji(const QString& emoji);
 	void on_lineEditMessage_textChanged();
-	void receiveMessages();
+	void onMessageReceived(QString message, QImage avatar);
+	void onUsersReceived(QString);
+	void onImageReceived(QByteArray);
+	//void receiveMessages();
 
 };
 

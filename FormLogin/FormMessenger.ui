@@ -32,13 +32,20 @@
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>15</x>
-      <y>15</y>
+      <x>20</x>
+      <y>30</y>
       <width>561</width>
       <height>361</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout">
+     <item row="1" column="3">
+      <widget class="QPushButton" name="btnSend">
+       <property name="text">
+        <string>Saada</string>
+       </property>
+      </widget>
+     </item>
      <item row="1" column="2">
       <widget class="QPushButton" name="btnEmoji">
        <property name="minimumSize">
@@ -68,27 +75,10 @@ background-repeat: none;
        </property>
       </widget>
      </item>
-     <item row="0" column="0" colspan="4">
-      <widget class="QTextEdit" name="textEdit">
-       <property name="readOnly">
-        <bool>true</bool>
-       </property>
-       <property name="placeholderText">
-        <string>Siia tulevad sõnumid koos saatja ja kellaajaga...</string>
-       </property>
-      </widget>
-     </item>
      <item row="1" column="0">
       <widget class="QLineEdit" name="lineEditMessage">
        <property name="placeholderText">
         <string>Aa</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="3">
-      <widget class="QPushButton" name="btnSend">
-       <property name="text">
-        <string>Saada</string>
        </property>
       </widget>
      </item>
@@ -121,6 +111,48 @@ background-repeat: none;
         <string/>
        </property>
       </widget>
+     </item>
+     <item row="0" column="0" colspan="4">
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <property name="spacing">
+        <number>6</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QTextEdit" name="textEdit">
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+         <property name="placeholderText">
+          <string>Siia tulevad sõnumid koos saatja ja kellaajaga...</string>
+         </property>
+        </widget>
+       </item>
+       <item alignment="Qt::AlignLeft">
+        <widget class="QTextEdit" name="textEditKasutajad">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+         <property name="placeholderText">
+          <string>Siia tulevad aktiivsed kasutajad...</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </widget>
