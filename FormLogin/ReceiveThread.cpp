@@ -23,27 +23,19 @@ void ReceiveThread::run() {
 
         if (bytesReceived > 0) {
             buffer[bytesReceived] = '\0';
-            if (bytesReceived > 0) {
-                buffer[bytesReceived] = '\0';
-                if (strstr(buffer, "Aktiivsed kasutajad:")) {
-                    QString usersStr = QString::fromUtf8(buffer);
-                    QString header = usersStr.left(usersStr.indexOf(":") + 1);
-                    QString userListStr = usersStr.mid(usersStr.indexOf(":") + 1);
-                    userListStr = userListStr.trimmed(); // remove any extra whitespace, including newline character
-                    QStringList usersList = userListStr.split("\n");
-
-                    QString formattedUsersStr = header + "\n";
-                    for (int i = 0; i < usersList.size(); i++) {
-                        formattedUsersStr += "<b>" + usersList[i] + "</b>\n";
-                    }
-
-                    emit usersReceived(formattedUsersStr.toUtf8());
+            if (strstr(buffer, "Aktiivsed kasutajad:")) {
+                QString usersStr = QString::fromUtf8(buffer);
+                QString header = usersStr.left(usersStr.indexOf(":") + 1);
+                QString userListStr = usersStr.mid(usersStr.indexOf(":") + 1);
+                userListStr = userListStr.trimmed(); // remove any extra whitespace, including newline character
+                QStringList usersList = userListStr.split("\n");
+                QString formattedUsersStr = header + "<br>";
+                for (int i = 0; i < usersList.size(); i++) {
+                    formattedUsersStr += "<b>" + usersList[i] + "</b><br>";
                 }
-                else if (strstr(buffer, "<img")) {
-                    // ... code for processing image data
-                }
-            }
-
+                emit usersReceived(formattedUsersStr.toUtf8());
+                //emit usersReceived(QString::fromUtf8(buffer));
+            }  
             else if (strstr(buffer, "<img"))
             {
                 while (!strstr(buffer, ">"))
