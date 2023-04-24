@@ -16,6 +16,7 @@
 #include <QScrollArea>
 #include "ReceiveThread.h"
 
+
 using namespace std;
 
 class FormMessenger : public QMainWindow

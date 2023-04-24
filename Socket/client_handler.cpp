@@ -215,7 +215,6 @@ void getClientIcon(char* icon, SOCKET clientSocket)
 
 }
 
-
 void sendActiveUsers(clientInfo_t* client)
 {
     char msg_buf[1024] = "Aktiivsed kasutajad:\n";

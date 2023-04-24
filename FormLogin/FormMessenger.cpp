@@ -108,7 +108,7 @@ void FormMessenger::on_btnPicture_clicked()
 	ui.textEdit->append("\n");
 	QString timeStamp = QTime::currentTime().toString("hh:mm:ss");
 	QImage imageAvatar(m_avatarPath);
-	imageAvatar = imageAvatar.scaledToHeight(30, Qt::SmoothTransformation);
+	imageAvatar = imageAvatar.scaled(QSize(30, 30), Qt::KeepAspectRatio, Qt::SmoothTransformation);
 	QTextCursor cursor(ui.textEdit->textCursor());
 	cursor.insertImage(imageAvatar);
 	cursor.insertText(timeStamp + "  " + m_userName + ": ");
@@ -143,6 +143,7 @@ void FormMessenger::on_btnSend_clicked()
 		delete[] mbStr;
 
 		QImage imageAvatar(m_avatarPath);
+		//int avatarHeight = ui.textEdit->fontMetrics().height();
 		imageAvatar = imageAvatar.scaledToHeight(30, Qt::SmoothTransformation);
 		QTextCursor cursor(ui.textEdit->textCursor());
 		cursor.insertImage(imageAvatar);
@@ -157,7 +158,7 @@ void FormMessenger::on_btnEmoji_clicked()
 	QDialog* emojiDialog = new QDialog(this);
 	QVBoxLayout* emojiLayout = new QVBoxLayout(emojiDialog);
 	emojiDialog->setLayout(emojiLayout);
-	emojiDialog->setWindowTitle("Emojis");
+	emojiDialog->setWindowTitle("Emotikonid");
 
 	QScrollArea* scrollArea = new QScrollArea(emojiDialog);
 	scrollArea->setWidgetResizable(true);
@@ -222,6 +223,10 @@ void FormMessenger::on_btnEmoji_clicked()
 	emojiGrid->addWidget(emojiButton, 6, 0);
 	connect(emojiButton, &QPushButton::clicked, this, [this]() { insertEmoji("\U0001F609"); });
 
+	emojiButton = new QPushButton("\U0001F44D", emojiWidget);
+	emojiGrid->addWidget(emojiButton, 6, 1);
+	connect(emojiButton, &QPushButton::clicked, this, [this]() { insertEmoji("\U0001F44D"); });
+
 	QPushButton* closeButton = new QPushButton(tr("Close"), emojiDialog);
 	emojiLayout->addWidget(closeButton);
 	connect(closeButton, &QPushButton::clicked, emojiDialog, &QDialog::reject);
@@ -277,6 +282,34 @@ void FormMessenger::on_lineEditMessage_textChanged()
 		message.replace(";)", "\U0001F609");
 	}
 	ui.lineEditMessage->setText(message);
+}
+
+void FormMessenger::onMessageReceived(QString message, QImage avatar)
+{
+	ui.textEdit->append("\n");
+	if (avatar.isNull()) {
+
+		ui.textEdit->append(message);
+	}
+	else {
+		// Display the text message and avatar in the text edit
+		QTextCursor cursor(ui.textEdit->textCursor());
+		cursor.insertImage(avatar);
+		cursor.insertText(message);
+		ui.textEdit->moveCursor(QTextCursor::End);
+	}
+}
+
+void FormMessenger::onUsersReceived(QString users)
+{
+	ui.textEditKasutajad->clear();
+	ui.textEditKasutajad->append(users);
+}
+
+void FormMessenger::onImageReceived(QByteArray image)
+{
+	ui.textEdit->append(image.data());
+	ui.textEdit->moveCursor(QTextCursor::End);
 }
 
 void FormMessenger::onMessageReceived(QString message, QImage avatar)

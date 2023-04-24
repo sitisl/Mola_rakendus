@@ -5,9 +5,9 @@
 #include <QImage>
 #include <QTime>
 
-class ReceiveThread  : public QThread
+class ReceiveThread : public QThread
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
     ReceiveThread(clientInfo_t client, QObject* parent = nullptr);
@@ -23,6 +23,6 @@ protected:
 
 private:
     clientInfo_t client;
-    
+
 };
 
