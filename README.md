@@ -1,6 +1,11 @@
 # Mola rakendus
 
-TalTech Tarkvara Projekt course 2023
+TalTech Tarkvara Projekt course 2023 \
+Authors:
+* Markus Visnapuu 
+* Rannar Randmäe 
+* Siim Tišler
+
 
 ## Introduction
 This is the repo of Group 15 from Software Project course at TalTech 2023. 
