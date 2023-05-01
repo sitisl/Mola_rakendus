@@ -1,4 +1,10 @@
 #include "FormMessenger.h"
+#include <QTextDocument>
+#include <QTextDocumentFragment>
+#include <QTextOption>
+#include <QTextCursor>
+#include <QTextBlockFormat>
+#include <QTextCharFormat>
 
 FormMessenger::FormMessenger(QWidget* parent)
 	: QMainWindow(parent)
@@ -54,8 +60,6 @@ void FormMessenger::handleClientData(int page, QString username, QString avatarP
 
 	if (bytesReceived > 0) {
 		buffer[bytesReceived] = '\0';
-		//ui.textEdit->append(QString(buffer));
-		//ui.textEdit->append(m_userName);
 	}
 	send(client.clientSocket, m_userName.toUtf8().constData(), m_userName.size(), 0);
 
@@ -65,8 +69,6 @@ void FormMessenger::handleClientData(int page, QString username, QString avatarP
 	}
 	send(client.clientSocket, m_avatarPath.toUtf8().constData(), m_avatarPath.size(), 0);
 
-	//std::thread receiveThread(&FormMessenger::receiveMessages, this);
-	//receiveThread.detach();
 	m_receiveThread = new ReceiveThread(client, this);
 	connect(m_receiveThread, SIGNAL(usersReceived(QString)), this, SLOT(onUsersReceived(QString)));
 	connect(m_receiveThread, SIGNAL(messageReceived(QString, QImage)), this, SLOT(onMessageReceived(QString, QImage)));
@@ -107,15 +109,30 @@ void FormMessenger::on_btnPicture_clicked()
 	// Append the image tag to the text edit
 	ui.textEdit->append("\n");
 	QString timeStamp = QTime::currentTime().toString("hh:mm:ss");
-	QImage imageAvatar(m_avatarPath);
+	/*QImage imageAvatar(m_avatarPath);
 	imageAvatar = imageAvatar.scaled(QSize(30, 30), Qt::KeepAspectRatio, Qt::SmoothTransformation);
 	QTextCursor cursor(ui.textEdit->textCursor());
 	cursor.insertImage(imageAvatar);
-	cursor.insertText(timeStamp + "  " + m_userName + ": ");
+	cursor.insertText(timeStamp + "  " + m_userName + ": ");*/
+	QImage imageAvatar(m_avatarPath);
+	imageAvatar = imageAvatar.scaledToHeight(32, Qt::SmoothTransformation);
+	QByteArray imageBytes;
+	QBuffer bfrAva(&imageBytes);
+	buffer.open(QIODevice::WriteOnly);
+	imageAvatar.save(&bfrAva, "PNG");
+	QString base64Image = QString::fromLatin1(imageBytes.toBase64().data());
+	//Create table for showing the sender nicely
+	QString tableRow = "<tr>"
+		"<td style='padding: 0px 5px 0px 0px;'><img src='data:image/png;base64," + base64Image + "'/></td>"
+		"<td><b>" + m_userName + "</b></td>"
+		"<td><font color='gray'>" + timeStamp + "</font></td>"
+		"</tr>";
+	// Insert the table row into a new table in the text edit
+	ui.textEdit->insertHtml("<table>" + tableRow + "</table></br>");
 	ui.textEdit->append(imageTag);
+	// Clear the message input field
+	ui.lineEditMessage->clear();
 	ui.textEdit->moveCursor(QTextCursor::End);
-	//ui.textEdit->insertPlainText(imageTag);
-
 }
 
 void FormMessenger::on_btnSend_clicked()
@@ -142,13 +159,33 @@ void FormMessenger::on_btnSend_clicked()
 		// Free the memory allocated for the multibyte character string
 		delete[] mbStr;
 
-		QImage imageAvatar(m_avatarPath);
+		/*QImage imageAvatar(m_avatarPath);
 		//int avatarHeight = ui.textEdit->fontMetrics().height();
 		imageAvatar = imageAvatar.scaledToHeight(30, Qt::SmoothTransformation);
 		QTextCursor cursor(ui.textEdit->textCursor());
 		cursor.insertImage(imageAvatar);
 		cursor.insertText(timeStamp + "  "  + m_userName + ": " + message);
 		ui.lineEditMessage->clear();
+		ui.textEdit->moveCursor(QTextCursor::End);*/
+
+		QImage imageAvatar(m_avatarPath);
+		imageAvatar = imageAvatar.scaledToHeight(32, Qt::SmoothTransformation);
+		QByteArray imageBytes;
+		QBuffer buffer(&imageBytes);
+		buffer.open(QIODevice::WriteOnly);
+		imageAvatar.save(&buffer, "PNG");
+		QString base64Image = QString::fromLatin1(imageBytes.toBase64().data());
+		//Create table for showing the message nicely
+		QString tableRow = "<tr>"
+			"<td style='padding: 0px 5px 0px 0px;'><img src='data:image/png;base64," + base64Image + "'/></td>"
+			"<td><b>" + m_userName + "</b><br>" + message + "</td>"
+			"<td><font color='gray'>" + timeStamp + "</font></td>"
+			"</tr>";
+		// Insert the table row into a new table in the text edit
+		ui.textEdit->insertHtml("<table>" + tableRow + "</table></br>");
+		// Clear the message input field
+		ui.lineEditMessage->clear();
+		// Move the cursor to the end of the text edit
 		ui.textEdit->moveCursor(QTextCursor::End);
 	}
 }
@@ -292,56 +329,22 @@ void FormMessenger::onMessageReceived(QString message, QImage avatar)
 		ui.textEdit->append(message);
 	}
 	else {
-		// Display the text message and avatar in the text edit
-		QTextCursor cursor(ui.textEdit->textCursor());
-		cursor.insertImage(avatar);
-		cursor.insertText(message);
-		ui.textEdit->moveCursor(QTextCursor::End);
-	}
-}
+		// Extract the timestamp from the input string
+		QString timeStamp = message.left(8); // Assuming the timestamp is in the first 8 characters of the input string
 
-void FormMessenger::onUsersReceived(QString users)
-{
-	ui.textEditKasutajad->clear();
-	ui.textEditKasutajad->append(users);
-}
+		// Split the input string into username and message
+		QStringList parts = message.mid(9).split(": "); // Assuming there's a space after the colon
+		QString userName = parts[0];
+		QString message = parts[1];
 
-void FormMessenger::onImageReceived(QByteArray image)
-{
-	ui.textEdit->append(image.data());
-	ui.textEdit->moveCursor(QTextCursor::End);
-}
+		// Convert the avatar image to base64
+		QByteArray imageBytes;
+		QBuffer buffer(&imageBytes);
+		buffer.open(QIODevice::WriteOnly);
+		avatar.save(&buffer, "PNG");
+		QString base64Image = QString::fromLatin1(imageBytes.toBase64().data());
 
-void FormMessenger::onMessageReceived(QString message, QImage avatar)
-{
-	ui.textEdit->append("\n");
-	if (avatar.isNull()) {
-
-		ui.textEdit->append(message);
-	}
-	else {
-		// Display the text message and avatar in the text edit
-		QTextCursor cursor(ui.textEdit->textCursor());
-		cursor.insertImage(avatar);
-		cursor.insertText(message);
-		ui.textEdit->moveCursor(QTextCursor::End);
-	}
-}
-
-void FormMessenger::onUsersReceived(QString users)
-{
-	ui.textEditKasutajad->clear();
-	ui.textEditKasutajad->append(users);
-}
-
-void FormMessenger::onImageReceived(QByteArray image)
-{
-	ui.textEdit->append(image.data());
-	ui.textEdit->moveCursor(QTextCursor::End);
-}
-
-/*
-void FormMessenger::receiveMessages()
+/*void FormMessenger::receiveMessages()
 {
 	while (true) {
 		char buffer[1024] = { 0 };
@@ -356,56 +359,32 @@ void FormMessenger::receiveMessages()
 
 		if (bytesReceived > 0) {
 			buffer[bytesReceived] = '\0';
-			if (strstr(buffer, "Aktiivsed kasutajad:")) {
-				ui.textEdit->clear();
-				ui.textEditKasutajad->append(buffer);
-			}
 			if (strstr(buffer, "<img")) {
 				while (!strstr(buffer, ">"))
 				{
 					// Resize the vector to hold the new data
 					img_data.resize(img_size + bytesReceived + 1);
 
-					// Append the newly received data to the img_data vector
-					std::copy(buffer, buffer + bytesReceived, img_data.begin() + img_size);
-					img_size += bytesReceived;
+		// Scroll to the bottom of the text edit
+		ui.textEdit->moveCursor(QTextCursor::End);
 
-					// Read more data from the socket
-					bytesReceived = recv(client.clientSocket, buffer, 1023, 0);
-					if (bytesReceived == SOCKET_ERROR) {
-						int errorCode = WSAGetLastError();
-						qDebug() << "Socket error: " << errorCode;
-						break;
-					}
-				}
-
-				// Append the final portion of the image data to the img_data vector
-
-				img_data.resize(img_size + bytesReceived + 1);
-				std::copy(buffer, buffer + bytesReceived, img_data.begin() + img_size);
-				img_size += bytesReceived;
-
-				ui.textEdit->append(img_data.data());
-			}
-			else {
-				// Display the text message in the text edit
-				QString msg = QString::fromUtf8(buffer, bytesReceived);
-				QStringList parts = msg.split("<PATH>");
-				if (parts.size() == 2) {
-					QString iconPath = parts[0];
-					QString message = parts[1];
-					ui.textEdit->append("\n");
-					QString timeStamp = QTime::currentTime().toString("hh:mm:ss");
-					QImage imageAvatar(iconPath);
-					imageAvatar = imageAvatar.scaledToHeight(30, Qt::SmoothTransformation);
-					QTextCursor cursor(ui.textEdit->textCursor());
-					cursor.insertImage(imageAvatar);
-					cursor.insertText(timeStamp + "  " + message);
-				}
-			}
-			ui.textEdit->moveCursor(QTextCursor::End);
-		}
-		img_data.clear();
 	}
 }
-*/
+
+void FormMessenger::onUsersReceived(QString users)
+{
+	//ui.textEditKasutajad->clear();
+	//ui.textEditKasutajad->append(users);
+	QString html = "<html><head></head><body>";
+	html += users;
+	html += "</body></html>";
+
+	ui.textEditKasutajad->setHtml(html);
+	
+}
+
+void FormMessenger::onImageReceived(QByteArray image)
+{
+	ui.textEdit->append(image.data());
+	ui.textEdit->moveCursor(QTextCursor::End);
+}
