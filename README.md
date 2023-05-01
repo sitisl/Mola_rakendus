@@ -1,6 +1,11 @@
 # Mola rakendus
 
-TalTech Tarkvara Projekt course 2023
+TalTech Tarkvara Projekt course 2023 \
+Authors:
+* Markus Visnapuu 
+* Rannar Randmäe 
+* Siim Tišler
+
 
 ## Introduction
 This is the repo of Group 15 from Software Project course at TalTech 2023. 
@@ -15,6 +20,6 @@ As of now the server is limited to six clients, but it can be changed in initSer
 ## Technologies Used
 * C and C++ programming languages
 * Qt framework for GUI
-* Visaul Studio and Qt Creator as an integrated development environment (IDE)
+* Visual Studio and Qt Creator as an integrated development environment (IDE)
 * Winsock2 for networking and TCP communication
 * Git for version control
