@@ -67,7 +67,7 @@ void HandleClientData(serverInfo_t* serv, clientInfo_t* client)
             if (FD_ISSET(client->clientSocket[i], &serv->fr))
             {
                 // Read client data
-                char receive_buf[1024] = { 0 };
+                char receive_buf[1024] = { 0, };
                 int img_size = 0; // Track the size of the image data received so far
                 char* img_data = nullptr; // Allocate a buffer to hold the image data
                 int nRet = recv(client->clientSocket[i], receive_buf, sizeof(receive_buf), 0);
@@ -150,7 +150,7 @@ void HandleClientData(serverInfo_t* serv, clientInfo_t* client)
                             if (client->clientSocket[j] > 0 && client->clientSocket[j] != client->clientSocket[i])
                             {
                                 char msg_buf[1024] = { 0 };
-                                sprintf(msg_buf, "%s<PATH>%s:", client->clientIcon[i], client->clientName[i]);
+                                sprintf(msg_buf, "%s<PATH>%s: ", client->clientIcon[i], client->clientName[i]);
                                 send(client->clientSocket[j], msg_buf, strlen(msg_buf), 0);
                                 send(client->clientSocket[j], img_data, img_size, 0);
                             }

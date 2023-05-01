@@ -15,7 +15,12 @@
 #include <QShortcut>
 #include <QScrollArea>
 #include "ReceiveThread.h"
-
+#include <QTextDocument>
+#include <QTextDocumentFragment>
+#include <QTextOption>
+#include <QTextCursor>
+#include <QTextBlockFormat>
+#include <QTextCharFormat>
 
 using namespace std;
 
@@ -43,7 +48,6 @@ private slots:
 	void on_btnEmoji_clicked();
 	void insertEmoji(const QString& emoji);
 	void on_lineEditMessage_textChanged();
-	//void receiveMessages();
 	void onMessageReceived(QString message, QImage avatar);
 	void onUsersReceived(QString);
 	void onImageReceived(QByteArray);

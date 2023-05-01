@@ -1,10 +1,4 @@
 #include "FormMessenger.h"
-#include <QTextDocument>
-#include <QTextDocumentFragment>
-#include <QTextOption>
-#include <QTextCursor>
-#include <QTextBlockFormat>
-#include <QTextCharFormat>
 
 FormMessenger::FormMessenger(QWidget* parent)
 	: QMainWindow(parent)
@@ -109,11 +103,6 @@ void FormMessenger::on_btnPicture_clicked()
 	// Append the image tag to the text edit
 	ui.textEdit->append("\n");
 	QString timeStamp = QTime::currentTime().toString("hh:mm:ss");
-	/*QImage imageAvatar(m_avatarPath);
-	imageAvatar = imageAvatar.scaled(QSize(30, 30), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-	QTextCursor cursor(ui.textEdit->textCursor());
-	cursor.insertImage(imageAvatar);
-	cursor.insertText(timeStamp + "  " + m_userName + ": ");*/
 	QImage imageAvatar(m_avatarPath);
 	imageAvatar = imageAvatar.scaledToHeight(32, Qt::SmoothTransformation);
 	QByteArray imageBytes;
@@ -130,8 +119,6 @@ void FormMessenger::on_btnPicture_clicked()
 	// Insert the table row into a new table in the text edit
 	ui.textEdit->insertHtml("<table>" + tableRow + "</table></br>");
 	ui.textEdit->append(imageTag);
-	// Clear the message input field
-	ui.lineEditMessage->clear();
 	ui.textEdit->moveCursor(QTextCursor::End);
 }
 
@@ -141,7 +128,6 @@ void FormMessenger::on_btnSend_clicked()
 	if (message != "" && message.length() < 1024) {
 		ui.textEdit->append("\n");
 		QString timeStamp = QTime::currentTime().toString("hh:mm:ss");
-		//send(client.clientSocket, message.toUtf8().constData(), message.size(), 0);
 		// Convert the QString to a wide character string
 		LPCWSTR wideStr = (LPCWSTR)message.utf16();
 		int wideStrLen = message.length();
@@ -159,16 +145,6 @@ void FormMessenger::on_btnSend_clicked()
 
 		// Free the memory allocated for the multibyte character string
 		delete[] mbStr;
-
-		/*QImage imageAvatar(m_avatarPath);
-		//int avatarHeight = ui.textEdit->fontMetrics().height();
-		imageAvatar = imageAvatar.scaledToHeight(30, Qt::SmoothTransformation);
-		QTextCursor cursor(ui.textEdit->textCursor());
-		cursor.insertImage(imageAvatar);
-		cursor.insertText(timeStamp + "  "  + m_userName + ": " + message);
-		ui.lineEditMessage->clear();
-		ui.textEdit->moveCursor(QTextCursor::End);*/
-
 		QImage imageAvatar(m_avatarPath);
 		imageAvatar = imageAvatar.scaledToHeight(32, Qt::SmoothTransformation);
 		QByteArray imageBytes;
@@ -365,8 +341,6 @@ void FormMessenger::onMessageReceived(QString message, QImage avatar)
 
 void FormMessenger::onUsersReceived(QString users)
 {
-	//ui.textEditKasutajad->clear();
-	//ui.textEditKasutajad->append(users);
 	QString html = "<html><head></head><body>";
 	html += users;
 	html += "</body></html>";
