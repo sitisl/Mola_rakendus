@@ -73,7 +73,7 @@ void ReceiveThread::run() {
                     QString message = parts[1];
                     QString timeStamp = QTime::currentTime().toString("hh:mm:ss");
                     QImage imageAvatar(iconPath);
-                    imageAvatar = imageAvatar.scaledToHeight(30, Qt::SmoothTransformation);
+                    imageAvatar = imageAvatar.scaledToHeight(32, Qt::SmoothTransformation);
                     emit messageReceived(timeStamp + "  " + message, imageAvatar);
                 }
                 else {
