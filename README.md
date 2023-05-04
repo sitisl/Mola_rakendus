@@ -23,7 +23,9 @@ Atleast Qt 6.2.4 needs to be installed with MSVC 2019 64-bit. Qt online installe
 https://www.qt.io/download-open-source
 
 Visual Studio 2019/2022 IDE is used for running and developing. Qt VS Tools extension is needed.
-In Extensions > Qt VS Tools > Qt versions the download must 
+
+Go to Extensions > Qt VS Tools > Qt versions. Change the version your downloaded version
+Also in FormsLogin project settings change your Qt version installer to the same version.
 
 ## Technologies Used
 * C and C++ programming languages
