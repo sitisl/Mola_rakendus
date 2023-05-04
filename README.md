@@ -24,8 +24,8 @@ https://www.qt.io/download-open-source
 
 Visual Studio 2019/2022 IDE is used for running and developing. Qt VS Tools extension is needed.
 
-Go to Extensions > Qt VS Tools > Qt versions. Change the version your downloaded version
-Also in FormsLogin project settings change your Qt version installer to the same version.
+Go to Extensions > Qt VS Tools > Qt versions. Change the version to your downloaded version
+Also in Visual Studio FormsLogin project settings change your Qt version installer to the same version.
 
 ## Technologies Used
 * C and C++ programming languages
