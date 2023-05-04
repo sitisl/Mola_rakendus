@@ -17,6 +17,14 @@ To run the messaging applications all files from FormLogin have to be downloaded
 For the communication to work between clients a server application has to be running as well, for that all files form Socket have to be downloaded and executed as a unit.
 As of now the server is limited to six clients, but it can be changed in initServ.h file.
 
+## Dependencies
+The min Qt version used for creating this project was 6.2.4_msvc2019_64
+Atleast Qt 6.2.4 needs to be installed with MSVC 2019 64-bit. Qt online installer can be downloaded from this site
+https://www.qt.io/download-open-source
+
+Visual Studio 2019/2022 IDE is used for running and developing. Qt VS Tools extension is needed.
+In Extensions > Qt VS Tools > Qt versions the download must 
+
 ## Technologies Used
 * C and C++ programming languages
 * Qt framework for GUI
