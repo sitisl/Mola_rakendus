@@ -7,6 +7,7 @@ FormMessenger::FormMessenger(QWidget* parent)
 	ui.textEdit->setReadOnly(TRUE);
 	QShortcut* shortcut = new QShortcut(QKeySequence(Qt::Key_Return), this);
 	connect(shortcut, SIGNAL(activated()), this, SLOT(on_btnSend_clicked()));
+	//QMediaPlayer* m_player = new QMediaPlayer(this);
 }
 
 FormMessenger::~FormMessenger()
@@ -95,7 +96,7 @@ void FormMessenger::on_btnPicture_clicked()
 	buffer.open(QIODevice::WriteOnly);
 	image.save(&buffer, "PNG");
 	QString imageString = imageData.toBase64();
-	QByteArray imageTag = QString("<img src=\"data:image/png;base64,%1\">").arg(imageString).toUtf8();
+	QByteArray imageTag = QString("<img src=\"data:image/png;base64,%1\"> ").arg(imageString).toUtf8();
 
 	// Send image data over the socket
 	send(client.clientSocket, imageTag.data(), imageTag.size(), 0);
@@ -303,7 +304,6 @@ void FormMessenger::onMessageReceived(QString message, QImage avatar)
 {
 	ui.textEdit->append("\n");
 	if (avatar.isNull()) {
-
 		ui.textEdit->append(message);
 	}
 	else {
@@ -333,6 +333,13 @@ void FormMessenger::onMessageReceived(QString message, QImage avatar)
 		QTextCursor cursor(ui.textEdit->document());
 		cursor.movePosition(QTextCursor::End);
 		cursor.insertHtml(newRow);
+
+		// Play a sound
+		/*QUrl url("/sounds/sounds/msg_received.mp3");
+		if (!url.isValid()) {
+			qDebug() << "Invalid URL: " << url;
+		}*/
+		
 
 		// Scroll to the bottom of the text edit
 		ui.textEdit->moveCursor(QTextCursor::End);

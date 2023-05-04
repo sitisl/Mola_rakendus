@@ -92,7 +92,7 @@ void HandleClientData(serverInfo_t* serv, clientInfo_t* client)
                     if (strstr(receive_buf, "<img"))
                     {
                         // Read the data from the socket until the end of the image tag is found
-                        while (!strstr(receive_buf, ">"))
+                        while (!strstr(receive_buf, "> "))
                         {
                             // Reallocate the buffer to hold the new data
                             char* new_img_data = (char*)realloc(img_data, img_size + nRet + 1);
