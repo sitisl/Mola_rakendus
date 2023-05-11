@@ -41,7 +41,7 @@ void FormMessenger::handleClientData(int page, QString username, QString avatarP
 	QString connectMsg;
 	if (res == SOCKET_ERROR) {
 		int errorCode = WSAGetLastError();
-		connectMsg = QString("Connect error %1").arg(errorCode);
+		connectMsg = QString("\u00DChenduse viga %1").arg(errorCode);
 		ui.textEdit->append(connectMsg);
 		WSACleanup();
 		closesocket(client.clientSocket);
