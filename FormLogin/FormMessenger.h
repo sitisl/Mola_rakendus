@@ -21,6 +21,8 @@
 #include <QTextCursor>
 #include <QTextBlockFormat>
 #include <QTextCharFormat>
+#include <QMediaPlayer>
+#include <qsoundeffect.h>
 
 using namespace std;
 

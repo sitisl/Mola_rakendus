@@ -12,7 +12,7 @@
 
 #define MAX_NAMELEN				25
 #define PORT					5555
-#define LOOPBACK_ADDRESS		"127.0.0.1"
+#define LOOPBACK_ADDRESS		"172.20.10.10"
 
 typedef struct clientInfo {
 	SOCKET clientSocket;

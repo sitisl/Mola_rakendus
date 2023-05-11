@@ -44,7 +44,7 @@ void FormName::on_btnAvatar_clicked()
 	QDialog* avatarDialog = new QDialog(this);
 	QVBoxLayout* avatarLayout = new QVBoxLayout(avatarDialog);
 	avatarDialog->setLayout(avatarLayout);
-	avatarDialog->setWindowTitle("Avatar");
+	avatarDialog->setWindowTitle("Vali sobiv profiilipilt");
 
 	QScrollArea* scrollArea = new QScrollArea(avatarDialog);
 	scrollArea->setWidgetResizable(true);
@@ -82,7 +82,7 @@ void FormName::on_btnAvatar_clicked()
         connect(avatarButton, &QPushButton::clicked, avatarDialog, &QDialog::reject);
     }
 
-	QPushButton* closeButton = new QPushButton(tr("Close"), avatarDialog);
+	QPushButton* closeButton = new QPushButton(tr("Sulge"), avatarDialog);
     avatarLayout->addWidget(closeButton);
 	connect(closeButton, &QPushButton::clicked, avatarDialog, &QDialog::reject);
 

@@ -7,6 +7,7 @@ FormMessenger::FormMessenger(QWidget* parent)
 	ui.textEdit->setReadOnly(TRUE);
 	QShortcut* shortcut = new QShortcut(QKeySequence(Qt::Key_Return), this);
 	connect(shortcut, SIGNAL(activated()), this, SLOT(on_btnSend_clicked()));
+	QMediaPlayer* m_player = new QMediaPlayer(this);
 }
 
 FormMessenger::~FormMessenger()
@@ -28,7 +29,7 @@ void FormMessenger::handleClientData(int page, QString username, QString avatarP
 	initSocketLib();
 
 	// SETUP socket =================================
-
+	
 	client.clientSocket = createSocket();
 
 	// Init client with port ========================
@@ -46,7 +47,7 @@ void FormMessenger::handleClientData(int page, QString username, QString avatarP
 		//ui.centralWidget->setEnabled(false);
 	}
 	else {
-		connectMsg = QString("Connected");
+		connectMsg = QString("\u00DChendatud");
 		ui.textEdit->append(connectMsg);
 	}
 	char buffer[1024] = { 0, };
@@ -79,7 +80,7 @@ void FormMessenger::on_btnPicture_clicked()
 
 	QImage image(imagePath);
 	if (image.isNull()) {
-		ui.textEdit->append("Error: Failed to load image");
+		ui.textEdit->append("Viga: Ei saanud pilti laadida");
 		return;
 	}
 
@@ -95,7 +96,7 @@ void FormMessenger::on_btnPicture_clicked()
 	buffer.open(QIODevice::WriteOnly);
 	image.save(&buffer, "PNG");
 	QString imageString = imageData.toBase64();
-	QByteArray imageTag = QString("<img src=\"data:image/png;base64,%1\">").arg(imageString).toUtf8();
+	QByteArray imageTag = QString("<img src=\"data:image/png;base64,%1\"> ").arg(imageString).toUtf8();
 
 	// Send image data over the socket
 	send(client.clientSocket, imageTag.data(), imageTag.size(), 0);
@@ -113,7 +114,7 @@ void FormMessenger::on_btnPicture_clicked()
 	//Create table for showing the sender nicely
 	QString tableRow = "<tr>"
 		"<td style='padding: 0px 5px 0px 0px;'><img src='data:image/png;base64," + base64Image + "'/></td>"
-		"<td><b>" + m_userName + "</b></td>"
+		"<td><b><span style='color:#07e3e2'>" + m_userName + "</b></td>"
 		"<td><font color='gray'>" + timeStamp + "</font></td>"
 		"</tr>";
 	// Insert the table row into a new table in the text edit
@@ -155,7 +156,8 @@ void FormMessenger::on_btnSend_clicked()
 		//Create table for showing the message nicely
 		QString tableRow = "<tr>"
 			"<td style='padding: 0px 5px 0px 0px;'><img src='data:image/png;base64," + base64Image + "'/></td>"
-			"<td><b>" + m_userName + "</b><br>" + message + "</td>"
+			//"<td>" + "<br>" + message + "</td>"
+			"<td><b><span style='color:#07e3e2'>" + m_userName + "</b><br>" + message + "< / td>"
 			"<td><font color='gray'>" + timeStamp + "</font></td>"
 			"</tr>";
 		// Insert the table row into a new table in the text edit
@@ -241,7 +243,7 @@ void FormMessenger::on_btnEmoji_clicked()
 	emojiGrid->addWidget(emojiButton, 6, 1);
 	connect(emojiButton, &QPushButton::clicked, this, [this]() { insertEmoji("\U0001F44D"); });
 
-	QPushButton* closeButton = new QPushButton(tr("Close"), emojiDialog);
+	QPushButton* closeButton = new QPushButton(tr("Sulge"), emojiDialog);
 	emojiLayout->addWidget(closeButton);
 	connect(closeButton, &QPushButton::clicked, emojiDialog, &QDialog::reject);
 
@@ -302,7 +304,6 @@ void FormMessenger::onMessageReceived(QString message, QImage avatar)
 {
 	ui.textEdit->append("\n");
 	if (avatar.isNull()) {
-
 		ui.textEdit->append(message);
 	}
 	else {
@@ -332,6 +333,10 @@ void FormMessenger::onMessageReceived(QString message, QImage avatar)
 		QTextCursor cursor(ui.textEdit->document());
 		cursor.movePosition(QTextCursor::End);
 		cursor.insertHtml(newRow);
+
+		/*QMediaPlayer * player = new QMediaPlayer(this);
+		player->setSource(QUrl(":/sounds/sounds/msg_received.mp3"));
+		player->play();*/
 
 		// Scroll to the bottom of the text edit
 		ui.textEdit->moveCursor(QTextCursor::End);

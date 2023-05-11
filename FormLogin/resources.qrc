@@ -232,4 +232,7 @@
         <file>icons/Asset 10.png</file>
         <file>icons/Asset 11.png</file>
     </qresource>
+    <qresource prefix="/sounds">
+        <file>sounds/msg_received.mp3</file>
+    </qresource>
 </RCC>

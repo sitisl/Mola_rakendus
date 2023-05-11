@@ -24,8 +24,6 @@ int main(int argc, char *argv[])
     FormName formName;
     FormMessenger formMessenger;
     stackedWidget.addWidget(&formName);
-    //QWidget* formN = stackedWidget.widget(0);
-    //formN->setFixedSize(600, 400);
     stackedWidget.addWidget(&formMessenger);
 
     // Set the stacked widget as the main widget for the application
