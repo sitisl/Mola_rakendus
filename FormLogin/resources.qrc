@@ -218,6 +218,8 @@
         <file>icons/Image-Dark-foc.png</file>
         <file>icons/Smile_dark_def.png</file>
         <file>icons/Smile_dark_foc.png</file>
+        <file>icons/notif.png</file>
+        <file>icons/notif-off.png</file>
     </qresource>
     <qresource prefix="/avatars">
         <file>icons/Asset 1.png</file>

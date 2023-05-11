@@ -22,8 +22,7 @@
 #include <QTextBlockFormat>
 #include <QTextCharFormat>
 #include <QMediaPlayer>
-#include <qsoundeffect.h>
-
+#include <QAudioOutput>
 using namespace std;
 
 class FormMessenger : public QMainWindow
@@ -40,7 +39,7 @@ private:
 	QString m_avatarPath;
 	clientInfo_t client;
 	ReceiveThread* m_receiveThread;
-
+	bool isSoundOn;
 public slots:
 	void handleClientData(int page, QString username, QString avatarPath);
 
@@ -48,6 +47,7 @@ private slots:
 	void on_btnPicture_clicked();
 	void on_btnSend_clicked();
 	void on_btnEmoji_clicked();
+	void on_btnSound_clicked();
 	void insertEmoji(const QString& emoji);
 	void on_lineEditMessage_textChanged();
 	void onMessageReceived(QString message, QImage avatar);
