@@ -7,7 +7,7 @@ FormMessenger::FormMessenger(QWidget* parent)
 	ui.textEdit->setReadOnly(TRUE);
 	QShortcut* shortcut = new QShortcut(QKeySequence(Qt::Key_Return), this);
 	connect(shortcut, SIGNAL(activated()), this, SLOT(on_btnSend_clicked()));
-	//QMediaPlayer* m_player = new QMediaPlayer(this);
+	QMediaPlayer* m_player = new QMediaPlayer(this);
 }
 
 FormMessenger::~FormMessenger()
@@ -334,12 +334,9 @@ void FormMessenger::onMessageReceived(QString message, QImage avatar)
 		cursor.movePosition(QTextCursor::End);
 		cursor.insertHtml(newRow);
 
-		// Play a sound
-		/*QUrl url("/sounds/sounds/msg_received.mp3");
-		if (!url.isValid()) {
-			qDebug() << "Invalid URL: " << url;
-		}*/
-		
+		/*QMediaPlayer * player = new QMediaPlayer(this);
+		player->setSource(QUrl(":/sounds/sounds/msg_received.mp3"));
+		player->play();*/
 
 		// Scroll to the bottom of the text edit
 		ui.textEdit->moveCursor(QTextCursor::End);
