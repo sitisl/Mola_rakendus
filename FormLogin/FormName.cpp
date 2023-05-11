@@ -14,7 +14,6 @@ FormName::FormName(QWidget *parent)
     avatarPath = QString(":/avatars/icons/Asset 1.png");
     QIcon avatarIcon = QIcon(avatarPath);
     ui.btnAvatar->setIcon(avatarIcon);
-    
 }
 
 FormName::~FormName()
