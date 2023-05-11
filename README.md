@@ -1,6 +1,6 @@
 # Mola rakendus
 
-TalTech Tarkvara Projekt course 2023 \
+TalTech Software Project course 2023 \
 Authors:
 * Markus Visnapuu 
 * Rannar Randmäe 
@@ -10,7 +10,7 @@ Authors:
 ## Introduction
 This is the repo of Group 15 from Software Project course at TalTech 2023. 
 The goal of the project was to create a messaging app in C that has a GUI and support for profile pictures and sending text, pictures and emojis between multiple clients.
-This repo is only for more convenient code management and project is intended olny as a study project.
+This repo is only for more convenient code management and project is intended only as a study project.
 
 ## Installation
 To run the messaging applications all files from FormLogin have to be downloaded and executed as a unit.
@@ -18,8 +18,8 @@ For the communication to work between clients a server application has to be run
 As of now the server is limited to six clients, but it can be changed in initServ.h file.
 
 ## Dependencies
-The min Qt version used for creating this project was 6.2.4_msvc2019_64
-Atleast Qt 6.2.4 needs to be installed with MSVC 2019 64-bit. Qt online installer can be downloaded from this site
+The min Qt version used for creating this project was 6.4.3_msvc2019_64
+Atleast Qt 6.4.3 needs to be installed with MSVC 2019 64-bit. Qt online installer can be downloaded from this site
 https://www.qt.io/download-open-source
 
 Visual Studio 2019/2022 IDE is used for running and developing. Qt VS Tools extension is needed.
