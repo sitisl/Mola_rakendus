@@ -36,7 +36,6 @@ void FormName::on_btnJatka_clicked()
         ui.statusBar->showMessage("Kasutajanimi liiga pikk!", 3000);
         ui.lineNimi->clear();
     }
-
 }
 
 void FormName::on_btnAvatar_clicked()

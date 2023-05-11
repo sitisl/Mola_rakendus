@@ -155,6 +155,40 @@
        </widget>
       </item>
       <item>
+       <widget class="QPushButton" name="btnSound">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>15</width>
+          <height>15</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>20</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>Sõnumi märguanne: sees</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="flat">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="btnPicture">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -173,6 +207,9 @@
           <width>30</width>
           <height>30</height>
          </size>
+        </property>
+        <property name="toolTip">
+         <string>Emotikonid</string>
         </property>
         <property name="styleSheet">
          <string notr="true">QPushButton#btnPicture{
@@ -216,6 +253,9 @@ background-repeat: none;
           <height>30</height>
          </size>
         </property>
+        <property name="toolTip">
+         <string>Saada pilt</string>
+        </property>
         <property name="styleSheet">
          <string notr="true">QPushButton#btnEmoji{
 background-color: transparent;
@@ -234,6 +274,9 @@ background-repeat: none;
         </property>
         <property name="text">
          <string/>
+        </property>
+        <property name="flat">
+         <bool>false</bool>
         </property>
        </widget>
       </item>

@@ -7,7 +7,8 @@ FormMessenger::FormMessenger(QWidget* parent)
 	ui.textEdit->setReadOnly(TRUE);
 	QShortcut* shortcut = new QShortcut(QKeySequence(Qt::Key_Return), this);
 	connect(shortcut, SIGNAL(activated()), this, SLOT(on_btnSend_clicked()));
-	QMediaPlayer* m_player = new QMediaPlayer(this);
+	ui.btnSound->setStyleSheet("QPushButton {background-color: transparent;border-image: url(:/myresources/icons/notif.png); }");
+	isSoundOn = true;
 }
 
 FormMessenger::~FormMessenger()
@@ -44,7 +45,6 @@ void FormMessenger::handleClientData(int page, QString username, QString avatarP
 		ui.textEdit->append(connectMsg);
 		WSACleanup();
 		closesocket(client.clientSocket);
-		//ui.centralWidget->setEnabled(false);
 	}
 	else {
 		connectMsg = QString("\u00DChendatud");
@@ -71,6 +71,21 @@ void FormMessenger::handleClientData(int page, QString username, QString avatarP
 	m_receiveThread->start();
 }
 
+void FormMessenger::on_btnSound_clicked()
+{
+	if (isSoundOn) {
+		ui.btnSound->setStyleSheet("QPushButton {background-color: transparent;border-image: url(:/myresources/icons/notif-off.png); }");
+		ui.btnSound->setToolTip("S\u00F5numi m\u00E4rguanne: v\u00E4ljas");
+		isSoundOn = false;
+
+	}
+	else {
+		ui.btnSound->setStyleSheet("QPushButton {background-color: transparent;border-image: url(:/myresources/icons/notif.png); }");
+		isSoundOn = true;
+		ui.btnSound->setToolTip("S\u00F5numi m\u00E4rguanne: sees");
+	}
+	ui.btnSound->update();
+}
 void FormMessenger::on_btnPicture_clicked()
 {
 	QString imagePath = QFileDialog::getOpenFileName(this, tr("Vali pilt"), "", tr("Pildid (*.png *.jpg *.jpeg *.bmp)"));
@@ -334,9 +349,15 @@ void FormMessenger::onMessageReceived(QString message, QImage avatar)
 		cursor.movePosition(QTextCursor::End);
 		cursor.insertHtml(newRow);
 
-		/*QMediaPlayer * player = new QMediaPlayer(this);
-		player->setSource(QUrl(":/sounds/sounds/msg_received.mp3"));
-		player->play();*/
+		if (isSoundOn) 
+		{
+			QMediaPlayer* player = new QMediaPlayer();
+			QAudioOutput* audioOutput = new QAudioOutput();
+			player->setAudioOutput(audioOutput);
+			player->setSource(QUrl("qrc:/sounds/sounds/msg_received.mp3"));
+			audioOutput->setVolume(40);
+			player->play();
+		}
 
 		// Scroll to the bottom of the text edit
 		ui.textEdit->moveCursor(QTextCursor::End);
@@ -358,4 +379,14 @@ void FormMessenger::onImageReceived(QByteArray image)
 {
 	ui.textEdit->append(image.data());
 	ui.textEdit->moveCursor(QTextCursor::End);
+
+	if (isSoundOn)
+	{
+		QMediaPlayer* player = new QMediaPlayer();
+		QAudioOutput* audioOutput = new QAudioOutput();
+		player->setAudioOutput(audioOutput);
+		player->setSource(QUrl("qrc:/sounds/sounds/msg_received.mp3"));
+		audioOutput->setVolume(40);
+		player->play();
+	}	
 }

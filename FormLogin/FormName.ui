@@ -112,6 +112,9 @@
           <height>80</height>
          </size>
         </property>
+        <property name="toolTip">
+         <string>Vali profiilipilt</string>
+        </property>
         <property name="text">
          <string/>
         </property>
