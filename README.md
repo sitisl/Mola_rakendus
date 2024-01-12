@@ -34,3 +34,9 @@ Also in Visual Studio FormsLogin project settings change your Qt version install
 * Visual Studio and Qt Creator as an integrated development environment (IDE)
 * Winsock2 for networking and TCP communication
 * Git for version control
+
+## Screenshots of UI
+### Profile avatar selection
+![image](https://github.com/sitisl/Mola_rakendus/assets/92330937/60f23961-4bd5-4e9f-b168-1263d76fbc16)
+### Chatting, using emojis, sending pictures
+![image](https://github.com/sitisl/Mola_rakendus/assets/92330937/a504e147-e768-46c4-a6e0-56ac428467f2)
